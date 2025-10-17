@@ -489,6 +489,11 @@ ninja.data = [{
           description: "another project with an image 🎉",
           section: "Projects",handler: () => {
               window.location.href = "/projects/9_project/";
+            },},{id: "projects-personal-portfolio-website",
+          title: 'Personal Portfolio Website',
+          description: "Building my personal academic portfolio using Jekyll and al-folio theme",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/portfolio_site/";
             },},{
         id: 'social-email',
         title: 'email',
@@ -497,18 +502,11 @@ ninja.data = [{
           window.open("mailto:%69%74%61%79%6D%61%74%79%61@%67%6D%61%69%6C.%63%6F%6D", "_blank");
         },
       },{
-        id: 'social-inspire',
-        title: 'Inspire HEP',
-        section: 'Socials',
-        handler: () => {
-          window.open("https://inspirehep.net/authors/1010907", "_blank");
-        },
-      },{
         id: 'social-linkedin',
         title: 'LinkedIn',
         section: 'Socials',
         handler: () => {
-          window.open("https://www.linkedin.com/in/https://www.linkedin.com/in/itay-matya-996149218/", "_blank");
+          window.open("https://www.linkedin.com/in/itay-matya-996149218/", "_blank");
         },
       },{
         id: 'social-rss',
