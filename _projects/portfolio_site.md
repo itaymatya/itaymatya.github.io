@@ -2,7 +2,7 @@
 layout: page
 title: Personal Portfolio Website
 description: Building my personal academic portfolio using Jekyll and al-folio theme
-img: ""
+img: assets/img/portfolio/portfolio screen shot.png
 importance: 1
 category: work
 ---
