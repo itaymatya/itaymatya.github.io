@@ -39,7 +39,7 @@ ninja.data = [{
           },
         },{id: "nav-cv",
           title: "cv",
-          description: "Quick bullet style CV or in the button to the left is the CV in pdf form",
+          description: "Quick bullet style CV or in the button to the right is the CV in pdf form",
           section: "Navigation",
           handler: () => {
             window.location.href = "/cv/";
