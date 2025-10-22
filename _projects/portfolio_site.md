@@ -143,7 +143,7 @@ Given you have only an intro course in Python, here's a short list of the additi
 
 - YAML (`.yml`, `.yaml`) — configuration for Jekyll and data files in `_data/`. Learn indentation and block scalars (`|` and `>`).
 - Markdown (`.md`) — writing pages and posts. Learn front matter (the top `---` block) and basic Markdown syntax.
-- Liquid templates (`.liquid`) — Jekyll's templating language used in `_layouts/` and `_includes/`. You'll see tags like `{% for %}` and `{{ variable }}`. It's similar to basic Python templating but with its own filters and logic.
+- Liquid templates (`.liquid`) — Jekyll's templating language used in `_layouts/` and `_includes/`. You'll see tags like {% raw %}{% for %}{% endraw %} and {% raw %}{{ variable }}{% endraw %}. It's similar to basic Python templating but with its own filters and logic.
 - HTML/CSS — small edits for layout or style changes, typically in `_includes/`, `_layouts/` and `_sass/`.
 - Ruby / Bundler (`Gemfile`, `bundle`) — you don't need to write Ruby for the site, but you will run `bundle install` to get Jekyll and plugins. Reading the `Gemfile` helps understand plugin versions.
 - JavaScript (`.js`) — used for interactive features. Usually you won't need deep JS knowledge but basic debugging in the browser devtools helps.
