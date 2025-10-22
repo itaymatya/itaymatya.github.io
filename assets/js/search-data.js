@@ -469,21 +469,46 @@ ninja.data = [{
           description: "The start of the desktop CNC mill project, adding wheels to the electrical cabinet, and a final inspection by the cat.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/desktop_cnc_mill_beginnings/";
+            },},{id: "projects-drawers-assembly-solidworks-to-finished-build",
+          title: 'Drawers Assembly — SolidWorks to Finished Build',
+          description: "Modeled and built a custom drawers assembly using SolidWorks and commonly available industrial parts; sourced components, accounted for tolerances, and assembled the final unit.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/drawers/";
             },},{id: "projects-ender3-v2-bltouch-amp-direct-drive",
           title: 'Ender3 v2 (BLTouch &amp;amp; Direct Drive)',
           description: "Upgraded a stock Ender 3 v2 with a BLTouch auto-level sensor, custom firmware via PlatformIO (Merlin-derived), and a direct-drive hotend assembly. Documenting firmware edits, wiring changes, calibration and print results.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/ender3_v2/";
+            },},{id: "projects-knife-head-printed-replacement-body",
+          title: 'Knife Head — Printed Replacement Body',
+          description: "Repaired a broken knife by printing a new handle/body and sharpening the separated blade to create a useful tool again.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/knife_head/";
             },},{id: "projects-light-pulse",
           title: 'Light Pulse',
           description: "Learning basic electronics by building a 555 timer light blinker in astable mode, with demo videos.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/light_pulse/";
+            },},{id: "projects-manual-automatic-coffee-grinder",
+          title: 'Manual → Automatic Coffee Grinder',
+          description: "Converted a manual coffee grinder to an electric grinder using a stepper motor, custom gears, an HTD3 belt, Arduino Uno, a switch, and a dedicated power supply with a step-down board for the Arduino.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/manual_to_automatic_coffee_grinder/";
             },},{id: "projects-personal-portfolio-website",
           title: 'Personal Portfolio Website',
           description: "Building my personal academic portfolio using Jekyll and al-folio theme",
           section: "Projects",handler: () => {
               window.location.href = "/projects/portfolio_site/";
+            },},{id: "projects-unikot58-mokaexpress-3-cup",
+          title: 'Unikot58 → MokaExpress (3‑cup)',
+          description: "Adapted the Unikot 58mm planetary gear wdt tool (original by Brian Quan) to work as a distribution/mixing tool for a 3‑cup MokaExpress moka pot. Show CAD challenges and the final adaptation.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/unikot58_to_mokaexpress/";
+            },},{id: "projects-work-table-from-wood-frame-to-folding-30x30-metal",
+          title: 'Work Table — From Wood Frame to Folding 30x30 Metal',
+          description: "Built a sturdy work table from scratch using wood beams, dowels, and hardware; later redesigned using 30x30 square metal tube with cut channels and hinges for fold-flat storage.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/work_table/";
             },},{id: "projects-xbox-remote-to-stepper",
           title: 'Xbox Remote to Stepper',
           description: "Using an Arduino Uno, USB host shield, and CNC motor controller to control stepper motors wirelessly with an Xbox controller.",
