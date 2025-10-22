@@ -3,7 +3,7 @@ layout: page
 title: Light Pulse
 category: work
 description: Learning basic electronics by building a 555 timer light blinker in astable mode, with demo videos.
-img: assets/light pulse/IMG-20240426-WA0001.jpeg
+img: assets/img/light pulse/IMG-20240426-WA0001.jpeg
 importance: 2
 ---
 
@@ -19,7 +19,7 @@ This project marks my first steps tinkering with basic electronics. I used a 555
 ## Circuit Photo
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
-    {% include figure.liquid loading="eager" path="assets/light pulse/IMG-20240426-WA0001.jpeg" title="555 timer light pulse breadboard" class="img-fluid rounded z-depth-1" %}
+  <img src="/assets/img/light pulse/IMG-20240426-WA0001.jpeg" alt="555 timer light pulse breadboard" class="img-fluid rounded z-depth-1" loading="eager">
   </div>
 </div>
 
@@ -27,13 +27,13 @@ This project marks my first steps tinkering with basic electronics. I used a 555
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     <video controls width="100%" preload="metadata">
-      <source src="/assets/light pulse/PXL_20240426_160227611.TS.mp4" type="video/mp4">
+  <source src="/assets/img/light pulse/PXL_20240426_160227611.TS.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
   <div class="col-sm mt-3 mt-md-0">
     <video controls width="100%" preload="metadata">
-      <source src="/assets/light pulse/PXL_20240522_164610055.LS.mp4" type="video/mp4">
+  <source src="/assets/img/light pulse/PXL_20240522_164610055.LS.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>

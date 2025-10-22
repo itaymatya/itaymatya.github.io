@@ -3,7 +3,7 @@ layout: page
 title: Cat Solar Fan
 category: work
 description: Building and revising a solar-powered fan for a cat, from first prototype to improved version with a more powerful panel and better placement.
-img: assets/img/cat solar fan/thumbnail.mp4
+img: assets/img/cat solar fan/2.jpg
 importance: 2
 ---
 
@@ -24,15 +24,18 @@ This project documents the design and evolution of a solar-powered fan for my ca
   </div>
 </div>
 <div class="row">
-  <div class="col-sm mt-3 mt-md-0">
-    <video controls width="100%" preload="metadata">
-      <source src="/assets/img/cat solar fan/1.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-  </div>
-  <div class="col-sm mt-3 mt-md-0">
-    {% include figure.liquid loading="eager" path="assets/img/cat solar fan/5.mp4" title="First build - operation" class="img-fluid rounded z-depth-1" %}
-  </div>
+    <div class="col-sm mt-3 mt-md-0">
+      <video controls width="100%" preload="metadata">
+        <source src="/assets/img/cat solar fan/1.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <div class="col-sm mt-3 mt-md-0">
+      <video controls width="100%" preload="metadata">
+        <source src="/assets/img/cat solar fan/5.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
 </div>
 <p>The first revision used a basic solar panel and fan setup. It worked, but the power output and placement could be improved.</p>
 

@@ -3,7 +3,7 @@ layout: page
 title: Xbox Remote to Stepper
 category: work
 description: Using an Arduino Uno, USB host shield, and CNC motor controller to control stepper motors wirelessly with an Xbox controller.
-img: assets/img/xbox remote to stepper/thumbnail.mp4
+img: assets/img/xbox remote to stepper/4.jpg
 importance: 2
 ---
 
