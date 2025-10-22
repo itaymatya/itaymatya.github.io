@@ -5,6 +5,7 @@ category: work
 description: Repaired a broken knife by printing a new handle/body and sharpening the separated blade to create a useful tool again.
 img: assets/img/knife head fix/thumbnail.jpeg
 importance: 2
+category: fun
 ---
 
 # Knife Head — printed replacement body

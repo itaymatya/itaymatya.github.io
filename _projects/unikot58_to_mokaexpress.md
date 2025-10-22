@@ -5,6 +5,7 @@ category: work
 description: Adapted the Unikot 58mm planetary gear wdt tool (original by Brian Quan) to work as a distribution/mixing tool for a 3‑cup MokaExpress moka pot. Show CAD challenges and the final adaptation.
 img: assets/img/unikot58 to mokaexpress 3 cup/thumbnail.jpg
 importance: 2
+category: fun
 ---
 
 # Unikot58 → MokaExpress (3‑cup)
@@ -42,6 +43,8 @@ Photos 1–6 show CAD, printed prototypes and the adapted base; 7–9 show fit a
   </div>
 </div>
 
+These first iterations validated the scale and basic footprint before moving to fit checks on the actual moka funnel.
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     {% include figure.liquid loading="eager" path="assets/img/unikot58 to mokaexpress 3 cup/3.png" title="Reduced-feature CAD for SolidWorks" class="img-fluid rounded z-depth-1" %}
@@ -51,6 +54,8 @@ Photos 1–6 show CAD, printed prototypes and the adapted base; 7–9 show fit a
   </div>
 </div>
 
+With reduced-feature geometry, SolidWorks edits were manageable and I could verify the adapter centered on the funnel.
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     {% include figure.liquid loading="eager" path="assets/img/unikot58 to mokaexpress 3 cup/5.png" title="Final printed adapter" class="img-fluid rounded z-depth-1" %}
@@ -59,6 +64,8 @@ Photos 1–6 show CAD, printed prototypes and the adapted base; 7–9 show fit a
     {% include figure.liquid loading="eager" path="assets/img/unikot58 to mokaexpress 3 cup/6.png" title="Mounting and clearance details" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
+
+Final printed parts ready for mounting; the next section shows motion and clearances.
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
@@ -80,5 +87,3 @@ Photos 1–6 show CAD, printed prototypes and the adapted base; 7–9 show fit a
 Original Unikot model by Brian Quan — please see the original Printables page: https://www.printables.com/model/481587-umikot-58mm-version-planetary-gear-spirograph-espr
 
 This adaptation is my modification of the original design to fit the MokaExpress 3‑cup funnel and to reduce the complexity for parametric editing.
-
-*** End Patch

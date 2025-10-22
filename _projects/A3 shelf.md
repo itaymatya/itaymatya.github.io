@@ -29,10 +29,12 @@ The result is a practical and robust solution for organizing large-format paper,
     <div class="col-sm mt-3 mt-md-0">
         {% include figure.liquid loading="eager" path="assets/img/A3 shelf/3.jpg" title="A3 shelf - view 3" class="img-fluid rounded z-depth-1" %}
     </div>
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.liquid loading="eager" path="assets/img/A3 shelf/4.jpg" title="A3 shelf - view 4" class="img-fluid rounded z-depth-1" %}
     </div>
+
+    The first set shows the overall structure and beam layout; the final image highlights the clearance above the A3 stack.
+    <div class="row">
+        <div class="col-sm mt-3 mt-md-0">
+            {% include figure.liquid loading="eager" path="assets/img/A3 shelf/4.jpg" title="A3 shelf - view 4" class="img-fluid rounded z-depth-1" %}
+        </div>
 </div>
 

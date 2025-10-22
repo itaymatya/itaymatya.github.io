@@ -5,6 +5,7 @@ category: work
 description: Converted a manual coffee grinder to an electric grinder using a stepper motor, custom gears, an HTD3 belt, Arduino Uno, a switch, and a dedicated power supply with a step-down board for the Arduino.
 img: assets/img/manual to automatic coffe grinder/thumbnail.jpg
 importance: 2
+category: fun
 ---
 
 # Manual → Automatic Coffee Grinder

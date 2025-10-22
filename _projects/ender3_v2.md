@@ -33,6 +33,8 @@ Below are the images documenting the work. Images 1–2 show the motherboard and
   </div>
 </div>
 
+The wiring changes above prepared the board for BLTouch and direct-drive routing.
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     <video controls width="100%" preload="metadata">
@@ -45,6 +47,8 @@ Below are the images documenting the work. Images 1–2 show the motherboard and
   </div>
 </div>
 
+Early calibration focused on motion checks and baseline extrusion consistency.
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
   {% include figure.liquid loading="eager" path="assets/img/ender 3 v2/5.jpg" title="Calibration step 3" class="img-fluid rounded z-depth-1" %}
@@ -54,6 +58,8 @@ Below are the images documenting the work. Images 1–2 show the motherboard and
   </div>
 </div>
 
+Further tuning refined retraction and temperature control for cleaner walls.
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
   {% include figure.liquid loading="eager" path="assets/img/ender 3 v2/7.jpg" title="Calibration step 5" class="img-fluid rounded z-depth-1" %}
@@ -62,6 +68,8 @@ Below are the images documenting the work. Images 1–2 show the motherboard and
   {% include figure.liquid loading="eager" path="assets/img/ender 3 v2/8.jpg" title="Calibration step 6" class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
+
+With calibration stabilized, I validated travel and motion profiles before print tests.
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
@@ -74,6 +82,8 @@ Below are the images documenting the work. Images 1–2 show the motherboard and
     </video>
   </div>
 </div>
+
+Final clips and photos show the upgraded machine producing reliable prints.
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">

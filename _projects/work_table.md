@@ -86,20 +86,22 @@ For V2, I switched to a metal design: 30x30 square tube, channels cut for hardwa
   </div>
 </div>
 
-## Additional views
+## Additional views — V2 folding revision
+
+Second revision focused on foldability: I cut channels into the 30x30 square metal tubes so the frame and hinges could nest flush and fold flat against the wall.
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
-    {% include figure.liquid loading="eager" path="assets/img/work table/13.jpg" title="Fold-flat profile — side view" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid loading="eager" path="assets/img/work table/13.jpg" title="Fold-flat profile — side view" caption="V2 side profile: channels cut into the 30x30 tubes let the frame nest flush when folded." class="img-fluid rounded z-depth-1" %}
   </div>
   <div class="col-sm mt-3 mt-md-0">
-    {% include figure.liquid loading="eager" path="assets/img/work table/14.jpg" title="Hinge hardware detail" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid loading="eager" path="assets/img/work table/14.jpg" title="Hinge hardware detail" caption="Hinges seat inside the channel cuts on the 30x30 tube for a low-profile fold." class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
-    {% include figure.liquid loading="eager" path="assets/img/work table/15.jpg" title="Wall clearance when folded" class="img-fluid rounded z-depth-1" %}
+    {% include figure.liquid loading="eager" path="assets/img/work table/15.jpg" title="Wall clearance when folded" caption="Clearance check: channeling and hinge placement prevent interference with the wall." class="img-fluid rounded z-depth-1" %}
   </div>
 </div>
 
