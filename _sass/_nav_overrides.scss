@@ -1,33 +1,32 @@
-// Nav overrides: make the Projects tab stand out
+// Nav overrides: make the Projects tab stand out with purple background
 
-/*
-  We target the nav link that points to the projects page.
-  This selector is robust to baseurl and relative_url usage.
-*/
-
-// Match both /projects and /projects/ and active states
-.navbar-nav a[href*="/projects"],
-.navbar-nav li.active > a[href*="/projects"],
-.navbar-nav a[href*="/projects"][aria-current],
-.navbar-nav a[href*="/projects"].active,
-.navbar-nav .nav-item.active a[href*="/projects"],
-li[aria-current="page"] a[href*="/projects"],
-.navbar-light .navbar-nav .active > .nav-link[href*="/projects"],
-.navbar-nav a[href*="/projects"].current {
-  background-color: #6f42c1;
+// Target any link in the navbar that contains "projects" in the href or text
+.navbar-nav a.nav-link[href*="project"],
+.navbar-nav .nav-item a[href*="project"],
+a.nav-link[href*="project"],
+.navbar .nav-link[href*="project"] {
+  background-color: #6f42c1 !important;
   color: #ffffff !important;
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
   font-weight: 600;
+  display: inline-block;
 }
 
-.navbar-nav a[href*="/projects"]:hover,
-.navbar-nav li.active > a[href*="/projects"]:hover,
-.navbar-nav .nav-item.active a[href*="/projects"]:hover,
-li[aria-current="page"] a[href*="/projects"]:hover,
-.navbar-light .navbar-nav .active > .nav-link[href*="/projects"]:hover,
-.navbar-nav a[href*="/projects"].current:hover {
-  background-color: #5a32a3;
+// Hover state
+.navbar-nav a.nav-link[href*="project"]:hover,
+.navbar-nav .nav-item a[href*="project"]:hover,
+a.nav-link[href*="project"]:hover,
+.navbar .nav-link[href*="project"]:hover {
+  background-color: #5a32a3 !important;
   color: #ffffff !important;
   text-decoration: none;
+}
+
+// Ensure visibility - override any display:none
+.navbar-nav .nav-item a[href*="project"],
+.navbar-nav a.nav-link[href*="project"] {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
