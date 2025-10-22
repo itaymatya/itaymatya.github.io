@@ -9,7 +9,11 @@
 .navbar-nav a[href*="/projects"],
 .navbar-nav li.active > a[href*="/projects"],
 .navbar-nav a[href*="/projects"][aria-current],
-.navbar-nav a[href*="/projects"].active {
+.navbar-nav a[href*="/projects"].active,
+.navbar-nav .nav-item.active a[href*="/projects"],
+li[aria-current="page"] a[href*="/projects"],
+.navbar-light .navbar-nav .active > .nav-link[href*="/projects"],
+.navbar-nav a[href*="/projects"].current {
   background-color: #6f42c1;
   color: #ffffff !important;
   border-radius: 6px;
@@ -18,7 +22,11 @@
 }
 
 .navbar-nav a[href*="/projects"]:hover,
-.navbar-nav li.active > a[href*="/projects"]:hover {
+.navbar-nav li.active > a[href*="/projects"]:hover,
+.navbar-nav .nav-item.active a[href*="/projects"]:hover,
+li[aria-current="page"] a[href*="/projects"]:hover,
+.navbar-light .navbar-nav .active > .nav-link[href*="/projects"]:hover,
+.navbar-nav a[href*="/projects"].current:hover {
   background-color: #5a32a3;
   color: #ffffff !important;
   text-decoration: none;
