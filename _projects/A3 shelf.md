@@ -4,7 +4,6 @@ title: A3 Shelf
 description: Custom shelf with load-bearing beams to free A3 paper stack
 img: assets/img/A3 shelf/thumbnail.jpg
 importance: 3
-published: false
 category: fun
 ---
 
@@ -37,5 +36,3 @@ The result is a practical and robust solution for organizing large-format paper,
     </div>
 </div>
 
-
-{% endraw %}

@@ -9,6 +9,10 @@ category: work
 
 # Creating My Academic Portfolio Website
 
+### Biggest lesson (highlight)
+THE BIGGEST LESSON FROM THIS PROJECT IS: ALWAYS CONSULT THE DOCUMENTATION — check Jekyll, al-folio, and GitHub Pages docs when you hit problems. Documentation will often point to exact config options, required plugins, and breaking changes in deployment.
+
+
 ## Project Overview
 This project documents the creation of my personal academic portfolio website using Jekyll and the al-folio theme. The site serves as a platform to showcase my academic work, projects, publications, and professional experience.
 
@@ -156,8 +160,6 @@ Given you have only an intro course in Python, here's a short list of the additi
 - Use browser DevTools to inspect the generated nav bar and confirm whether a page link exists but is hidden by CSS.
 - If an image or file is missing during a CI build, check the action logs for `No such file or directory` and verify case and path.
 
-### Biggest lesson (highlight)
-THE BIGGEST LESSON FROM THIS PROJECT IS: ALWAYS CONSULT THE DOCUMENTATION — check Jekyll, al-folio, and GitHub Pages docs when you hit problems. Documentation will often point to exact config options, required plugins, and breaking changes in deployment.
 
 ## Resources and References
 - [Jekyll Documentation](https://jekyllrb.com/docs/)
