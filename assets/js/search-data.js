@@ -444,11 +444,11 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-project-9",
-          title: 'project 9',
-          description: "another project with an image 🎉",
+          section: "News",},{id: "projects-a3-shelf",
+          title: 'A3 Shelf',
+          description: "Custom shelf with load-bearing beams to free A3 paper stack",
           section: "Projects",handler: () => {
-              window.location.href = "/projects/9_project/";
+              window.location.href = "/projects/5_project/";
             },},{id: "projects-a3-shelf",
           title: 'A3 Shelf',
           description: "Custom shelf with load-bearing beams to free A3 paper stack",
@@ -509,8 +509,8 @@ ninja.data = [{
           description: "Built a sturdy work table from scratch using wood beams, dowels, and hardware; later redesigned using 30x30 square metal tube with cut channels and hinges for fold-flat storage.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/work_table/";
-            },},{id: "projects-xbox-remote-to-stepper",
-          title: 'Xbox Remote to Stepper',
+            },},{id: "projects-using-an-xbox-remote-to-controll-stepper-motors",
+          title: 'Using an Xbox Remote to controll Stepper motors',
           description: "Using an Arduino Uno, USB host shield, and CNC motor controller to control stepper motors wirelessly with an Xbox controller.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/xbox_remote_to_stepper/";
