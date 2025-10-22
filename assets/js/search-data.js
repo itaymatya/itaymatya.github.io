@@ -454,9 +454,9 @@ ninja.data = [{
           description: "a project that redirects to another website",
           section: "Projects",handler: () => {
               window.location.href = "/projects/3_project/";
-            },},{id: "projects-project-5",
-          title: 'project 5',
-          description: "a project with a background image",
+            },},{id: "projects-a3-shelf",
+          title: 'A3 Shelf',
+          description: "Custom shelf with load-bearing beams to free A3 paper stack",
           section: "Projects",handler: () => {
               window.location.href = "/projects/5_project/";
             },},{id: "projects-project-9",
@@ -464,11 +464,36 @@ ninja.data = [{
           description: "another project with an image 🎉",
           section: "Projects",handler: () => {
               window.location.href = "/projects/9_project/";
+            },},{id: "projects-bambu-mouse-print",
+          title: 'Bambu Mouse Print',
+          description: "Step-by-step build of a 3D printed mouse using the Bambu printer, including shell, electronics, and assembly.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/bambu_mouse_print/";
+            },},{id: "projects-cat-solar-fan",
+          title: 'Cat Solar Fan',
+          description: "Building and revising a solar-powered fan for a cat, from first prototype to improved version with a more powerful panel and better placement.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/cat_solar_fan/";
+            },},{id: "projects-desktop-cnc-mill-beginnings",
+          title: 'Desktop CNC Mill Beginnings',
+          description: "The start of the desktop CNC mill project, adding wheels to the electrical cabinet, and a final inspection by the cat.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/desktop_cnc_mill_beginnings/";
+            },},{id: "projects-light-pulse",
+          title: 'Light Pulse',
+          description: "Learning basic electronics by building a 555 timer light blinker in astable mode, with demo videos.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/light_pulse/";
             },},{id: "projects-personal-portfolio-website",
           title: 'Personal Portfolio Website',
           description: "Building my personal academic portfolio using Jekyll and al-folio theme",
           section: "Projects",handler: () => {
               window.location.href = "/projects/portfolio_site/";
+            },},{id: "projects-xbox-remote-to-stepper",
+          title: 'Xbox Remote to Stepper',
+          description: "Using an Arduino Uno, USB host shield, and CNC motor controller to control stepper motors wirelessly with an Xbox controller.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/xbox_remote_to_stepper/";
             },},{
         id: 'social-email',
         title: 'email',
