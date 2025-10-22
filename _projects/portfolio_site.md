@@ -123,6 +123,42 @@ The site is automatically deployed to GitHub Pages when changes are pushed to th
 - Git workflow improvements
 - Web development best practices
 
+## Difficulties & Lessons (what I had to learn)
+
+### Deployment changes and GitHub updates
+Over time GitHub has changed how Pages build and deploy sites. The important differences I ran into while setting this site up were:
+
+- GitHub Actions vs. built-in Pages: older guides assume Pages will build with `jekyll` automatically, while today many projects use a GitHub Actions workflow to run `bundle install` and `bundle exec jekyll build` in a controlled environment. That means you may need to add a `.github/workflows/` workflow file and ensure the correct Ruby version and system packages (for example `imagemagick`) are installed in the runner.
+- System dependencies: image processing (responsive WebP generation) requires ImageMagick to be installed in the build environment. On GitHub Actions you usually add an `apt-get` step, for example:
+
+```yaml
+- name: Install system deps
+  run: sudo apt-get update && sudo apt-get install -y imagemagick
+```
+
+- File paths and case-sensitivity: GitHub Pages build runners (Linux) are case-sensitive. Make sure your image filenames and references match exactly (including spaces, dashes, and extensions).
+
+### Required languages, file types and syntaxes you should be familiar with
+Given you have only an intro course in Python, here's a short list of the additional languages and file types you'll encounter and what they are used for in this project:
+
+- YAML (`.yml`, `.yaml`) — configuration for Jekyll and data files in `_data/`. Learn indentation and block scalars (`|` and `>`).
+- Markdown (`.md`) — writing pages and posts. Learn front matter (the top `---` block) and basic Markdown syntax.
+- Liquid templates (`.liquid`) — Jekyll's templating language used in `_layouts/` and `_includes/`. You'll see tags like `{% for %}` and `{{ variable }}`. It's similar to basic Python templating but with its own filters and logic.
+- HTML/CSS — small edits for layout or style changes, typically in `_includes/`, `_layouts/` and `_sass/`.
+- Ruby / Bundler (`Gemfile`, `bundle`) — you don't need to write Ruby for the site, but you will run `bundle install` to get Jekyll and plugins. Reading the `Gemfile` helps understand plugin versions.
+- JavaScript (`.js`) — used for interactive features. Usually you won't need deep JS knowledge but basic debugging in the browser devtools helps.
+- JSON (`.json`) — resume data is loaded via `jekyll_get_json` (see `assets/json/resume.json`). Knowing JSON structure helps when editing resume contents.
+- Images and binary files (`.jpg`, `.png`, `.webp`, `.pdf`) — know where to place them (e.g., `assets/img/`, `assets/pdf/`) and how the build will transform them.
+
+### Practical tips for someone with a Python intro-course background
+- Use Python strengths (file editing, small scripts) to automate repetitive tasks (for example, generating JSON resume entries or batch-renaming images). A tiny Python script can help validate YAML/JSON before committing.
+- Learn to run local builds: `bundle exec jekyll serve` and check `_site/` output. This is faster for debugging than relying on GitHub Actions alone.
+- Use browser DevTools to inspect the generated nav bar and confirm whether a page link exists but is hidden by CSS.
+- If an image or file is missing during a CI build, check the action logs for `No such file or directory` and verify case and path.
+
+### Biggest lesson (highlight)
+THE BIGGEST LESSON FROM THIS PROJECT IS: ALWAYS CONSULT THE DOCUMENTATION — check Jekyll, al-folio, and GitHub Pages docs when you hit problems. Documentation will often point to exact config options, required plugins, and breaking changes in deployment.
+
 ## Resources and References
 - [Jekyll Documentation](https://jekyllrb.com/docs/)
 - [al-folio Theme Documentation](https://github.com/alshedivat/al-folio)

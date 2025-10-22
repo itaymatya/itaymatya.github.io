@@ -1,0 +1,27 @@
+// Nav overrides: make the Projects tab stand out
+
+/*
+  We target the nav link that points to the projects page.
+  This selector is robust to baseurl and relative_url usage.
+*/
+.navbar-nav a[href$="/projects/"] {
+  background-color: #6f42c1; /* purple */
+  color: #ffffff !important;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+}
+
+/* Ensure hover keeps white text and slightly darker background */
+.navbar-nav a[href$="/projects/"]:hover {
+  background-color: #5a32a3;
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+/* If the Projects item is active, emphasize it */
+.navbar-nav li.active > a[href$="/projects/"],
+.navbar-nav a[href$="/projects/"][aria-current] {
+  background-color: #4b2686;
+  color: #fff !important;
+}
