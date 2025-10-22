@@ -479,6 +479,11 @@ ninja.data = [{
           description: "The start of the desktop CNC mill project, adding wheels to the electrical cabinet, and a final inspection by the cat.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/desktop_cnc_mill_beginnings/";
+            },},{id: "projects-ender3-v2-bltouch-amp-direct-drive",
+          title: 'Ender3 v2 (BLTouch &amp;amp; Direct Drive)',
+          description: "Upgraded a stock Ender 3 v2 with a BLTouch auto-level sensor, custom firmware via PlatformIO (Merlin-derived), and a direct-drive hotend assembly. Documenting firmware edits, wiring changes, calibration and print results.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/ender3_v2/";
             },},{id: "projects-light-pulse",
           title: 'Light Pulse',
           description: "Learning basic electronics by building a 555 timer light blinker in astable mode, with demo videos.",
