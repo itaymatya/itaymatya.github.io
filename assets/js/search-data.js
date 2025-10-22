@@ -444,26 +444,16 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-project-1",
-          title: 'project 1',
-          description: "with background image",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/1_project/";
-            },},{id: "projects-project-3-with-very-long-name",
-          title: 'project 3 with very long name',
-          description: "a project that redirects to another website",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/3_project/";
-            },},{id: "projects-a3-shelf",
-          title: 'A3 Shelf',
-          description: "Custom shelf with load-bearing beams to free A3 paper stack",
-          section: "Projects",handler: () => {
-              window.location.href = "/projects/5_project/";
-            },},{id: "projects-project-9",
+          section: "News",},{id: "projects-project-9",
           title: 'project 9',
           description: "another project with an image 🎉",
           section: "Projects",handler: () => {
               window.location.href = "/projects/9_project/";
+            },},{id: "projects-a3-shelf",
+          title: 'A3 Shelf',
+          description: "Custom shelf with load-bearing beams to free A3 paper stack",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/A3%20shelf/";
             },},{id: "projects-bambu-mouse-print",
           title: 'Bambu Mouse Print',
           description: "Step-by-step build of a 3D printed mouse using the Bambu printer, including shell, electronics, and assembly.",
