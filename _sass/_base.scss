@@ -167,14 +167,20 @@ ul.task-list input[type="checkbox"] {
 .pid-project-media {
   width: 100%;
   height: 320px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .pid-project figure img,
 .pid-project figure video {
   width: 100%;
   height: 320px;
-  object-fit: cover;
+  object-fit: contain;
+}
+
+.pid-project h1,
+.pid-project h2,
+.pid-project h3 {
+  font-weight: 700;
 }
 
 .pid-project .caption {
