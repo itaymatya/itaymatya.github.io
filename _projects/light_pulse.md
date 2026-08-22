@@ -12,11 +12,13 @@ importance: 2
 This project marks my first steps tinkering with basic electronics. I used a 555 timer IC in astable mode to create a simple circuit that blinks an LED. This hands-on build helped me understand timing circuits and the basics of breadboarding, wiring, and troubleshooting.
 
 ## Project Overview
+
 - **Goal:** Make a light blink using a 555 timer in astable (oscillator) mode
 - **Skills learned:** Breadboarding, wiring, reading datasheets, basic circuit debugging
 - **Key component:** 555 timer IC
 
 ## Circuit Photo
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
   <img src="/assets/img/light pulse/IMG-20240426-WA0001.jpeg" alt="555 timer light pulse breadboard" class="img-fluid rounded z-depth-1" loading="eager">
@@ -24,6 +26,7 @@ This project marks my first steps tinkering with basic electronics. I used a 555
 </div>
 
 ## Demo Videos
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     <video controls width="100%" preload="metadata">
@@ -42,6 +45,7 @@ This project marks my first steps tinkering with basic electronics. I used a 555
 <p>Both videos above are playable directly on the site. They show the 555 timer circuit blinking an LED in real time.</p>
 
 ## What I Learned
+
 - How to use a 555 timer in astable mode
 - How to connect and test a simple LED blinker circuit
 - The basics of electronics prototyping

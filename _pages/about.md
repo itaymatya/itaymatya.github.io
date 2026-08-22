@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: 
+subtitle:
 
 profile:
   align: right
@@ -29,7 +29,7 @@ latest_posts:
 
 About Me
 
-I’m Itay Matya, a Mechanical Engineering student at Tel Aviv University with a passion for design, precision engineering, and hands-on problem-solving. 
+I’m Itay Matya, a Mechanical Engineering student at Tel Aviv University with a passion for design, precision engineering, and hands-on problem-solving.
 I specialize in CAD modeling with SolidWorks, CNC design, and mechanical systems development — blending theory from my academic studies with real-world engineering projects.
 
 My journey began with a strong technical foundation in the military as a combat sapper and tank operator, where I learned discipline, adaptability, and leadership under pressure. Since then, I’ve expanded my experience across mechanical fabrication, construction, and operations management, giving me a deep understanding of how engineering meets practical implementation.
@@ -39,4 +39,3 @@ Outside of academia, I am designing and building my own desktop CNC machine — 
 I hold a SolidWorks Associate Certification (CSWA) and maintain a GPA of 84, with a 99 in graphical engineering (CAD). My work reflects curiosity, dedication, and a drive to continually learn and improve.
 
 You can explore my projects, engineering achievements, and portfolio on this site — showcasing how I approach mechanical design, prototyping, and problem-solving with both technical rigor and creativity.
-

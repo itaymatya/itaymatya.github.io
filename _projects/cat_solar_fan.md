@@ -13,6 +13,7 @@ importance: 2
 This project documents the design and evolution of a solar-powered fan for my cat. The goal was to keep my cat cool using renewable energy, with several revisions to improve performance and aesthetics.
 
 ## First Revision: Initial Build
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     {% include figure.liquid loading="eager" path="assets/img/cat solar fan/2.jpg" title="First build - front view" class="img-fluid rounded z-depth-1" %}
@@ -43,6 +44,7 @@ This project documents the design and evolution of a solar-powered fan for my ca
 <p>The first revision used a basic solar panel and fan setup. It worked, but the power output and placement could be improved.</p>
 
 ## Revision 2: More Powerful Panel & Discrete Location
+
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
     <video controls width="100%" preload="metadata">

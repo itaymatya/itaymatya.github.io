@@ -198,4 +198,3 @@ If you'd like, I can:
 
 - Add a downloadable BOM (CSV) with quantities and suggested suppliers.
 - Generate a short printable checklist for assembly steps.
-
