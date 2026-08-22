@@ -8,7 +8,7 @@ importance: 2
 published: true
 ---
 
-<div class="pid-project">
+<div class="pid-project" markdown="1">
 
 # Adding PID & Pressure Control to an Espresso Machine
 
@@ -33,11 +33,11 @@ This project documents hardware and firmware modifications to add a PID temperat
 - Optionally integrate a UI or web dashboard to set profiles.
 - Log pressure and temperature for each shot.
 
-**Preface**
+### Preface
 
 I entered the world of coffee with a second‑hand DeLonghi ECP 35.31 and a plan: upgrade a low‑cost machine into a platform that behaves like much more expensive equipment. This project documents mechanical design, plumbing and electrical modifications, firmware work for PID temperature control, pressure sensing and profiling, and lessons learned.
 
-**Demo videos**
+### Demo videos
 
 <div class="row">
   <div class="col-sm mt-3 mt-md-0">
@@ -59,7 +59,7 @@ I entered the world of coffee with a second‑hand DeLonghi ECP 35.31 and a plan
 </div>
 <div class="caption"><em>Start: the DeLonghi ECP 35.31 used as the project platform.</em></div>
 
-**Description — Starting point**
+### Description — Starting point
 
 I began with a low‑cost, second‑hand DeLonghi ECP 35.31. The goal was to use this humble platform as a learning vehicle: implement temperature PID control, add pressure sensing, and improve reliability and serviceability. The early work focused on interior access, documenting stock wiring, and planning mechanical mounting points for sensors and the PID enclosure.
 
@@ -77,7 +77,7 @@ I began with a low‑cost, second‑hand DeLonghi ECP 35.31. The goal was to use
 </div>
 <div class="caption">Left: kit and SSR; center: CAD enclosure I designed to hold the pressure gauge and REX‑C100 PID; right: the PID and gauge installed on the machine.</div>
 
-**Description — Control kit and enclosure**
+### Description — Control kit and enclosure
 
 The control kit includes the REX‑C100 PID controller, an SSR for heater switching with a mounted heat sink, and the basic mounting hardware. I designed a SolidWorks enclosure to hold the PID and pressure gauge cleanly on the machine's front panel. The CAD model (image 3) ensured correct clearances for the gauge and wiring, while the kit photo (image 4) shows the SSR and heat sink used to manage heater power. Image 5 shows the completed install — tidy placement reduces wiring stress and improves maintenance access.
 
@@ -95,7 +95,7 @@ The control kit includes the REX‑C100 PID controller, an SSR for heater switch
 </div>
 <div class="caption">Plumbing work: top of boiler, initial fittings (which later failed), and the assembled water loop.</div>
 
-**Description — Plumbing modification and initial failure**
+### Description — Plumbing modification and initial failure
 
 I cut the factory water lines at the top of the boiler to insert new fittings and route a custom water loop. Initially I used push‑fit style fittings rated to 16 MPa (160 bar) — far above the operating pressure — but these fittings relied on compressing a brass olive onto the tubing. The soft PTFE tubing collapsed slightly under compression, creating micro‑gaps that leaked under operational pressure (expected operating pressure < 10 bar). The photos show the cut boiler, the initial fittings, and the mock‑up loop used to test routing and flow.
 
@@ -116,7 +116,7 @@ I cut the factory water lines at the top of the boiler to insert new fittings an
 </div>
 <div class="caption">An Italian over‑pressure valve used to keep pump → boiler pressure constant by returning excess to the tank.</div>
 
-**Description — Revision and over‑pressure valve**
+### Description — Revision and over‑pressure valve
 
 After repeated leaks I replaced the push‑fit components with industrial‑grade fittings designed for machinery use (image 9). To maintain consistent pump→boiler pressure I installed a spring‑regulated over‑pressure valve (image 10). This valve returns excess flow to the tank when pressure exceeds a set point, effectively stabilizing the feed pressure to the boiler and allowing repeatable pump behavior during profiling.
 
@@ -131,7 +131,7 @@ After repeated leaks I replaced the push‑fit components with industrial‑grad
 </div>
 <div class="caption">Thermocouple mounted with thermal paste to improve thermal coupling to the boiler.</div>
 
-**Description — Temperature sensing**
+### Description — Temperature sensing
 
 Accurate temperature control required a well‑mounted thermocouple. I mounted the sensor to the boiler with thermal paste and a mechanical clamp to minimize thermal lag (images 11–12). Good thermal coupling is necessary for the PID to respond correctly and avoid overshoot during temperature setpoint changes.
 
@@ -148,7 +148,7 @@ Accurate temperature control required a well‑mounted thermocouple. I mounted t
 
 <p>I routed the heater control through the PID while preserving the original brew thermostat behavior: during normal brew the PID controls the heater, but steam mode is left to the factory circuit so the machine behaves as designed when producing steam.</p>
 
-**Description — Control strategy and reverse engineering**
+### Description — Control strategy and reverse engineering
 
 I traced the stock thermostat and logic board signals to understand how the factory interlocks and steam mode operate. The simplified diagram (image 14) shows where the PID intercepts the heater control and where the original thermostat remains in the steam path. This hybrid strategy preserves factory safety while adding precise temperature control during extraction. Image 13 documents the wiring connections discovered during the reverse‑engineering process.
 
@@ -163,7 +163,7 @@ I traced the stock thermostat and logic board signals to understand how the fact
 </div>
 <div class="caption">Wiring bottom and dedicated 240V switch for the PID controller to avoid factory auto‑off behavior.</div>
 
-**Description — Power and wiring reliability**
+### Description — Power and wiring reliability
 
 Connecting the PID to the original on/off switch caused an unintended auto‑shutdown: the machine's factory timing and capacitor behavior caused the logic board to detect a brown‑out and turn off immediately when the PID drew power. To avoid this I added a dedicated 240 V switch for the PID (image 16) and tidied the bottom‑of‑machine wiring (image 15). This isolation prevents the PID's draw from interfering with the factory controller and preserves normal timeouts.
 
@@ -194,7 +194,7 @@ Connecting the PID to the original on/off switch caused an unintended auto‑shu
 
 <div class="caption">Final photos: the completed machine with PID temperature control, pressure gauge and robust plumbing.</div>
 
-**Final notes and lessons learned**
+### Final notes and lessons learned
 
 This was an extensive engineering project that required mechanical design, plumbing revisions, careful electrical work, and iterative testing. Key takeaways:
 
