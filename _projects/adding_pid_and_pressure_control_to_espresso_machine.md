@@ -2,7 +2,7 @@
 layout: page
 title: Adding PID & Pressure Control to Espresso Machine
 category: work
-description: Add PID temperature control and pressure profiling to an espresso machine to improve shot consistency.
+description: Upgrade a DeLonghi ECP 35.31 with PID temperature and pressure control for repeatable extractions.
 img: assets/img/adding_pid_pressure/1 THUMB.jpeg
 importance: 2
 published: true
@@ -31,48 +31,13 @@ This project documents hardware and firmware modifications to add a PID temperat
 - Optionally integrate a UI or web dashboard to set profiles.
 - Log pressure and temperature for each shot.
 
-## Media (photos & videos)
-
-Place photos and videos in `assets/img/adding_pid_pressure/` using the filenames below. After you add files, tell me how you want them organized and I will update captions and layout.
-
-- Recommended image filenames and purpose:
-  - `thumbnail.jpg` — hero/portfolio thumbnail (recommended size ~1200×800)
-  - `1.jpg` … `9.jpg` — sequential photos for project narrative (CAD, wiring, assembly, test shots)
-
-- Recommended video filenames:
-  - `1.mp4`, `2.mp4` — short test videos (probe logs, live shots, pressure profile)
-
 Preface
 
-I entered the world of coffee with a basic second‑hand DeLonghi ECP 35.31 and a plan: upgrade a low‑cost machine into a platform that behaves like machines costing many times more. This project documents the design choices, electrical work, plumbing revisions and failures, and the final solution: temperature control via a PID controller and pressure management for repeatable extractions. The build required mechanical adapters (CAD), custom wiring, plumbing revisions, and many iterative tests — the lessons learned are recorded alongside the photos and videos below.
+I entered the world of coffee with a second‑hand DeLonghi ECP 35.31 and a plan: upgrade a low‑cost machine into a platform that behaves like much more expensive equipment. This project documents mechanical design, plumbing and electrical modifications, firmware work for PID temperature control, pressure sensing and profiling, and lessons learned.
 
 Demo videos
 
-The three demo videos play first to show the project in action.
-
-<div class="row">
-  <div class="col-sm mt-3 mt-md-0">
-    <video controls width="100%" preload="metadata">
-      <source src="/assets/img/adding_pid_pressure/DEMO .mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <div class="caption">Demo: overview of the modified machine in operation.</div>
-  </div>
-  <div class="col-sm mt-3 mt-md-0">
-    <video controls width="100%" preload="metadata">
-      <source src="/assets/img/adding_pid_pressure/EXP MACHINE.mp4" type="video/mp4">
-    </video>
-    <div class="caption">Machine demo: extraction and pressure/temperature behavior.</div>
-  </div>
-  <div class="col-sm mt-3 mt-md-0">
-    <video controls width="100%" preload="metadata">
-      <source src="/assets/img/adding_pid_pressure/EXP GRINDER.mp4" type="video/mp4">
-    </video>
-    <div class="caption">Grinder demo: grinder setup used for testing.</div>
-  </div>
-</div>
-
-Project timeline (media)
+The demo videos show the assembled machine and test extractions. Files are in `assets/img/adding_pid_pressure/` and are embedded below.
 
 <!-- Beginning: base machine -->
 <div class="row">
@@ -120,7 +85,7 @@ The control kit includes the REX‑C100 PID controller, an SSR for heater switch
 
 Description — Plumbing modification and initial failure
 
-I cut the factory water lines at the top of the boiler to insert new fittings and route the custom water loop. Initially I used push‑fit style fittings rated to 2 MPa; however, these relied on compressing a brass olive against the tubing. The soft PTFE tubing I used collapsed slightly under the olive and internal creasing created micro‑gaps that leaked under pressure. The photos show the cut boiler, the initial fittings, and the mock‑up loop used to test routing and flow.
+I cut the factory water lines at the top of the boiler to insert new fittings and route a custom water loop. Initially I used push‑fit style fittings rated to 16 MPa (160 bar) — far above the operating pressure — but these fittings relied on compressing a brass olive onto the tubing. The soft PTFE tubing collapsed slightly under compression, creating micro‑gaps that leaked under operational pressure (expected operating pressure < 10 bar). The photos show the cut boiler, the initial fittings, and the mock‑up loop used to test routing and flow.
 
 <!-- Fittings failure and revision -->
 <p>The first fittings were rated well above the required pressure but relied on compressing a brass olive; the soft PTFE tubing collapsed internally leaving a small gap and causing leaks. I replaced all fittings with industrial‑grade components to create a robust, leak‑proof system.</p>
@@ -226,11 +191,4 @@ This was an extensive engineering project that required mechanical design, plumb
 - Good sensor mounting (thermal paste, solid mechanical contact) materially improves PID performance.
 - Document every change — photos, wiring diagrams, and part numbers make troubleshooting and future improvements straightforward.
 
-If you'd like I can now:
-
-- Set `published: true` to publish the page,
-- Update any captions to the exact wording you prefer, or
-- Rearrange images if you want a different visual sequence.
-
-
-If you want any captions changed, different ordering, or specific images highlighted (close‑ups, CAD cross‑sections, wiring detail), tell me which image numbers and the exact caption text and I'll update the page and set `published: true` when you're ready.
+<!-- Captions and ordering can be adjusted on request. -->
