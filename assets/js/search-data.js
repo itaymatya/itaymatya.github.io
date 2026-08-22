@@ -454,6 +454,11 @@ ninja.data = [{
           description: "Custom shelf with load-bearing beams to free A3 paper stack",
           section: "Projects",handler: () => {
               window.location.href = "/projects/A3%20shelf/";
+            },},{id: "projects-adding-pid-amp-pressure-control-to-espresso-machine",
+          title: 'Adding PID &amp;amp; Pressure Control to Espresso Machine',
+          description: "Add PID temperature control and pressure profiling to an espresso machine to improve shot consistency.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/adding_pid_and_pressure_control_to_espresso_machine/";
             },},{id: "projects-bambu-mouse-print",
           title: 'Bambu Mouse Print',
           description: "Step-by-step build of a 3D printed mouse using the Bambu printer, including shell, electronics, and assembly.",
