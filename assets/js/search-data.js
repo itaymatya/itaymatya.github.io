@@ -448,15 +448,10 @@ ninja.data = [{
           title: 'A3 Shelf',
           description: "Custom shelf with load-bearing beams to free A3 paper stack",
           section: "Projects",handler: () => {
-              window.location.href = "/projects/5_project/";
-            },},{id: "projects-a3-shelf",
-          title: 'A3 Shelf',
-          description: "Custom shelf with load-bearing beams to free A3 paper stack",
-          section: "Projects",handler: () => {
               window.location.href = "/projects/A3%20shelf/";
             },},{id: "projects-adding-pid-amp-pressure-control-to-espresso-machine",
           title: 'Adding PID &amp;amp; Pressure Control to Espresso Machine',
-          description: "Add PID temperature control and pressure profiling to an espresso machine to improve shot consistency.",
+          description: "Upgrade a DeLonghi ECP 35.31 with PID temperature and pressure control for repeatable extractions.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/adding_pid_and_pressure_control_to_espresso_machine/";
             },},{id: "projects-bambu-mouse-print",
