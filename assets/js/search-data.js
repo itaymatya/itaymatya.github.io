@@ -509,9 +509,9 @@ ninja.data = [{
           description: "Built a sturdy work table from scratch using wood beams, dowels, and hardware; later redesigned using 30x30 square metal tube with cut channels and hinges for fold-flat storage.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/work_table/";
-            },},{id: "projects-using-an-xbox-remote-to-controll-stepper-motors",
-          title: 'Using an Xbox Remote to controll Stepper motors',
-          description: "Using an Arduino Uno, USB host shield, and CNC motor controller to control stepper motors wirelessly with an Xbox controller.",
+            },},{id: "projects-using-an-xbox-controller-to-control-stepper-motors",
+          title: 'Using an Xbox Controller to Control Stepper Motors',
+          description: "Integrating a wireless Xbox controller, Arduino Uno, USB Host Shield, and CNC motor controller to drive stepper motors with real-time motion commands.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/xbox_remote_to_stepper/";
             },},{
