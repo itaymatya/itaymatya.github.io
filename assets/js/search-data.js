@@ -51,6 +51,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/teaching/";
           },
+        },{id: "nav-violin",
+          title: "violin",
+          description: "Interactive violin practice, scale theory, and ear training",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/violin/";
+          },
         },{id: "dropdown-bookshelf",
               title: "bookshelf",
               description: "",
