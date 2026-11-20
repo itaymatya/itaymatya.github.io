@@ -1,6 +1,5 @@
-// Nav overrides: make the Projects tab stand out with purple background
+// Nav overrides: rectangle-style tabs for Projects and Violin
 
-// Target any link in the navbar that contains "projects" in the href or text
 .navbar-nav a.nav-link[href*="project"],
 .navbar-nav .nav-item a[href*="project"],
 a.nav-link[href*="project"],
@@ -13,7 +12,20 @@ a.nav-link[href*="project"],
   display: inline-block;
 }
 
-// Hover state
+.navbar-nav a.nav-link[href*="/violin/"],
+.navbar-nav .nav-item a[href*="/violin/"],
+a.nav-link[href*="/violin/"],
+.navbar .nav-link[href*="/violin/"] {
+  background-color: #f29105 !important;
+  color: #1f1712 !important;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-inline-start: 0.25rem;
+}
+
+// Hover states
 .navbar-nav a.nav-link[href*="project"]:hover,
 .navbar-nav .nav-item a[href*="project"]:hover,
 a.nav-link[href*="project"]:hover,
@@ -23,9 +35,20 @@ a.nav-link[href*="project"]:hover,
   text-decoration: none;
 }
 
-// Ensure visibility - override any display:none
+.navbar-nav a.nav-link[href*="/violin/"]:hover,
+.navbar-nav .nav-item a[href*="/violin/"]:hover,
+a.nav-link[href*="/violin/"]:hover,
+.navbar .nav-link[href*="/violin/"]:hover {
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+// Ensure visibility
 .navbar-nav .nav-item a[href*="project"],
-.navbar-nav a.nav-link[href*="project"] {
+.navbar-nav a.nav-link[href*="project"],
+.navbar-nav .nav-item a[href*="/violin/"],
+.navbar-nav a.nav-link[href*="/violin/"] {
   display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;
