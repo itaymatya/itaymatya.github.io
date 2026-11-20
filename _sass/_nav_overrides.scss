@@ -12,12 +12,12 @@ a.nav-link[href*="project"],
   display: inline-block;
 }
 
-.navbar-nav a.nav-link[href*="/violin/"],
-.navbar-nav .nav-item a[href*="/violin/"],
-a.nav-link[href*="/violin/"],
-.navbar .nav-link[href*="/violin/"] {
+.navbar-nav .violin-nav-link,
+.navbar-nav a.violin-nav-link,
+.violin-nav-link {
   background-color: #f29105 !important;
   color: #1f1712 !important;
+  border: 1px solid #d97706;
   border-radius: 6px;
   padding: 0.4rem 0.8rem;
   font-weight: 700;
@@ -35,10 +35,9 @@ a.nav-link[href*="project"]:hover,
   text-decoration: none;
 }
 
-.navbar-nav a.nav-link[href*="/violin/"]:hover,
-.navbar-nav .nav-item a[href*="/violin/"]:hover,
-a.nav-link[href*="/violin/"]:hover,
-.navbar .nav-link[href*="/violin/"]:hover {
+.navbar-nav .violin-nav-link:hover,
+.navbar-nav a.violin-nav-link:hover,
+.violin-nav-link:hover {
   background-color: #d97706 !important;
   color: #ffffff !important;
   text-decoration: none;
@@ -47,8 +46,8 @@ a.nav-link[href*="/violin/"]:hover,
 // Ensure visibility
 .navbar-nav .nav-item a[href*="project"],
 .navbar-nav a.nav-link[href*="project"],
-.navbar-nav .nav-item a[href*="/violin/"],
-.navbar-nav a.nav-link[href*="/violin/"] {
+.navbar-nav .nav-item a.violin-nav-link,
+.navbar-nav a.violin-nav-link {
   display: inline-block !important;
   visibility: visible !important;
   opacity: 1 !important;

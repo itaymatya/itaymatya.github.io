@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -133,7 +133,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen p-3 md:p-5">
+<body class="min-h-screen p-3 md:p-5" dir="rtl">
 
     <!-- מיכל ראשי מותאם לתצוגת עמוד תווים (טאבלט / מחשב) -->
     <div id="violin-app" class="max-w-6xl mx-auto space-y-4">
@@ -1305,6 +1305,7 @@
                 if (isStandaloneMetroOn) {
                     audioEngine.init();
                     metroBtn.classList.add('border-amber-500', 'text-amber-400');
+
                     metroLed.classList.remove('bg-slate-500');
                     metroLed.classList.add('bg-amber-400', 'animate-pulse');
                     metroBtnText.textContent = 'מטרונום פועל';
