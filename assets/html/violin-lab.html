@@ -131,6 +131,21 @@
         input[type="range"] {
             accent-color: var(--accent-amber);
         }
+
+        .language-switcher button.active {
+            background: var(--accent-amber);
+            color: white;
+            border-color: var(--accent-amber);
+        }
+
+        html[lang="ru"] body,
+        html[lang="en"] body {
+            direction: ltr;
+        }
+
+        html[lang="he"] body {
+            direction: rtl;
+        }
     </style>
 </head>
 <body class="min-h-screen p-3 md:p-5" dir="rtl">
@@ -151,6 +166,12 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-2.5">
+                <div class="language-switcher flex items-center gap-1 p-1 rounded-xl inset-box" aria-label="Language">
+                    <button type="button" data-lang="he" class="lang-btn active px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="עברית">עב</button>
+                    <button type="button" data-lang="en" class="lang-btn px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="English">EN</button>
+                    <button type="button" data-lang="ru" class="lang-btn px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="Русский">RU</button>
+                </div>
+
                 <!-- מתג תדר כיוון לה = 440Hz / 442Hz -->
                 <button id="tuningToggle" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold border transition flex items-center gap-2 inset-box hover:border-amber-500/60">
                     <span>🎵 כיוון תזמורתי:</span>
@@ -444,35 +465,66 @@
                 const now = this.ctx.currentTime + startTimeOffset;
                 const freq = this.midiToFreq(midi);
 
-                const osc1 = this.ctx.createOscillator();
-                const osc2 = this.ctx.createOscillator();
-                const filter = this.ctx.createBiquadFilter();
-                const gainNode = this.ctx.createGain();
+                const master = this.ctx.createGain();
+                const lowpass = this.ctx.createBiquadFilter();
+                lowpass.type = 'lowpass';
+                lowpass.frequency.setValueAtTime(2600, now);
+                lowpass.frequency.exponentialRampToValueAtTime(1450, now + durationSec);
 
-                osc1.type = 'sawtooth';
-                osc1.frequency.setValueAtTime(freq, now);
+                master.gain.setValueAtTime(0.001, now);
+                master.gain.linearRampToValueAtTime(0.20, now + 0.085);
+                master.gain.setValueAtTime(0.16, now + Math.max(0.12, durationSec - 0.11));
+                master.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
 
-                osc2.type = 'triangle';
-                osc2.frequency.setValueAtTime(freq, now);
+                // Harmonic-rich bowed-string timbre: fundamentals plus bowed-string overtones.
+                const partials = [1, 2, 3, 4, 5, 6];
+                const gains = [0.60, 0.34, 0.22, 0.14, 0.09, 0.055];
+                const oscillators = [];
+                partials.forEach((partial, i) => {
+                    const osc = this.ctx.createOscillator();
+                    const partialGain = this.ctx.createGain();
+                    osc.type = i < 2 ? 'sawtooth' : 'triangle';
+                    osc.frequency.setValueAtTime(freq * partial, now);
+                    partialGain.gain.setValueAtTime(gains[i], now);
+                    osc.detune.setValueAtTime(i % 2 === 0 ? 2 : -2, now);
+                    osc.connect(partialGain);
+                    partialGain.connect(lowpass);
+                    oscillators.push(osc);
+                });
 
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(1900, now);
-                filter.frequency.exponentialRampToValueAtTime(980, now + durationSec);
+                // Natural bow attack and slight string vibrato.
+                const noiseBuffer = this.ctx.createBuffer(1, Math.ceil(this.ctx.sampleRate * 0.12), this.ctx.sampleRate);
+                const noiseData = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < noiseData.length; i++) {
+                    noiseData[i] = (Math.random() * 2 - 1) * (1 - i / noiseData.length);
+                }
+                const noise = this.ctx.createBufferSource();
+                const noiseFilter = this.ctx.createBiquadFilter();
+                const noiseGain = this.ctx.createGain();
+                noise.buffer = noiseBuffer;
+                noiseFilter.type = 'bandpass';
+                noiseFilter.frequency.value = 1800;
+                noiseFilter.Q.value = 0.7;
+                noiseGain.gain.setValueAtTime(0.055, now);
+                noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+                noise.connect(noiseFilter);
+                noiseFilter.connect(noiseGain);
+                noiseGain.connect(master);
 
-                gainNode.gain.setValueAtTime(0.001, now);
-                gainNode.gain.linearRampToValueAtTime(0.24, now + 0.055);
-                gainNode.gain.setValueAtTime(0.20, now + Math.max(0.07, durationSec - 0.09));
-                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+                const vibrato = this.ctx.createOscillator();
+                const vibratoGain = this.ctx.createGain();
+                vibrato.frequency.value = 5.2;
+                vibratoGain.gain.setValueAtTime(0.001, now);
+                vibratoGain.gain.linearRampToValueAtTime(5.5, now + 0.12);
+                vibrato.connect(vibratoGain);
+                oscillators.forEach(osc => vibratoGain.connect(osc.detune));
 
-                osc1.connect(filter);
-                osc2.connect(filter);
-                filter.connect(gainNode);
-                gainNode.connect(this.ctx.destination);
+                lowpass.connect(master);
+                master.connect(this.ctx.destination);
 
-                osc1.start(now);
-                osc2.start(now);
-                osc1.stop(now + durationSec + 0.02);
-                osc2.stop(now + durationSec + 0.02);
+                oscillators.forEach(osc => { osc.start(now); osc.stop(now + durationSec + 0.03); });
+                noise.start(now); noise.stop(now + 0.12);
+                vibrato.start(now); vibrato.stop(now + durationSec + 0.03);
             }
 
             // נקישת מטרונום חדה (פעמה 1 מודגשת גבוהה, פעמות 2-4 רכות יותר, שמיניות עדינות)
@@ -707,7 +759,7 @@
                     const customLabel = (customMap && customMap[posId]) ? customMap[posId] : base.solfege;
                     seq.push({
                         ...base,
-                        displayLabel: customLabel,
+                        displayLabel: localizeNoteName(customLabel),
                         direction: dir,
                         stepIndex: seq.length
                     });
@@ -884,7 +936,7 @@
                 svgContent += `
                     <g class="note-marker" id="fb-note-${pos.id}" data-pos-id="${pos.id}" opacity="${opacity}">
                         <circle cx="${x}" cy="${y}" r="16" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
-                        <text x="${x}" y="${y - 2}" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">${pos.solfege}</text>
+                        <text x="${x}" y="${y - 2}" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">${typeof localizeNoteName === 'function' ? localizeNoteName(pos.solfege) : pos.solfege}</text>
                         <text x="${x}" y="${y + 10}" fill="#f1f5f9" font-size="8.5" font-weight="700" text-anchor="middle">(${shortFinger})</text>
                     </g>
                 `;
@@ -1335,11 +1387,123 @@
                 document.body.classList.toggle('light-theme');
             });
 
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+            });
+
             setupEarTraining();
             selectExercise('g_major');
         }
 
         window.addEventListener('DOMContentLoaded', initApp);
+
+        /**
+         * ============================================================================
+         * תרגום והחלפת שפה
+         * ============================================================================
+         */
+        const I18N = {
+            he: {
+                title: 'מעבדת אימון לכינור — סולפג\' קבוע',
+                subtitle: 'סולמות, ארפג\'יו, מטרונום, נגינה בלופ ואילוסטרציה חיה (דו, רה, מי, פה, סול, לה, סי)',
+                tuning: 'כיוון תזמורתי:',
+                theme: 'ערכת צבע',
+                playScale: 'נגן סולם',
+                stopScale: 'עצור נגינה',
+                loop: 'לופ רציף',
+                countIn: 'ספירה מקדימה (4)',
+                tap: 'הקש קצב',
+                metroRunning: 'מטרונום פועל',
+                metroOn: 'הפעל מטרונום',
+                earPlay: 'השמע תו אקראי',
+                earRepeat: 'שוב'
+            },
+            en: {
+                title: 'Violin Practice Lab — Fixed Solfège',
+                subtitle: 'Scales, Arpeggios, Metronome, Loop Playback, and Live Illustration (C, D, E, F, G, A, B)',
+                tuning: 'Tuning:',
+                theme: 'Color Theme',
+                playScale: 'Play Scale',
+                stopScale: 'Stop Scale',
+                loop: 'Continuous Loop',
+                countIn: 'Count-in (4)',
+                tap: 'Tap Tempo',
+                metroRunning: 'Metronome Running',
+                metroOn: 'Turn On Metronome',
+                earPlay: 'Play Random Note',
+                earRepeat: 'Repeat'
+            },
+            ru: {
+                title: 'Лаборатория практики скрипки — Фиксированная сольфеджио',
+                subtitle: 'Масштабы, арпеджио, метроном, воспроизведение в петле и живая иллюстрация (До, Ре, Ми, Фа, Соль, Ля, Си)',
+                tuning: 'Настройка:',
+                theme: 'Цветовая тема',
+                playScale: 'Играть масштаб',
+                stopScale: 'Остановить игру',
+                loop: 'Непрерывная петля',
+                countIn: 'Счет (4)',
+                tap: 'Темп нажатия',
+                metroRunning: 'Метроном работает',
+                metroOn: 'Включить метроном',
+                earPlay: 'Играть случайную ноту',
+                earRepeat: 'Повторить'
+            }
+        };
+
+        let currentLanguage = 'he';
+
+        function setText(elementId, text) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = text;
+            }
+        }
+
+        function applyLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            document.body.dir = (lang === 'he') ? 'rtl' : 'ltr';
+            const t = I18N[lang];
+
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+            document.querySelector('h1').textContent = t.title;
+            const subtitle = document.querySelector('header p');
+            if (subtitle) subtitle.textContent = t.subtitle;
+
+            const tuningToggle = document.getElementById('tuningToggle');
+            if (tuningToggle) tuningToggle.innerHTML = `<span>🎵 ${t.tuning}</span><span id="tuningLabel" class="text-amber-400">${lang === 'he' ? 'לה' : (lang === 'ru' ? 'ля' : 'A')} = ${audioEngine.a4Freq} Hz</span>`;
+            setText('themeToggle', `🌓 ${t.theme}`);
+            setText('playText', isScalePlaying ? t.stopScale : t.playScale);
+
+            setText('loopToggleBtn', t.loop);
+            setText('countInToggleBtn', t.countIn);
+            setText('tapTempoBtn', `👆 ${t.tap}`);
+            setText('metroBtnText', isStandaloneMetroOn ? t.metroRunning : t.metroOn);
+            setText('earPlayBtn', `🔊 ${t.earPlay}`);
+            setText('earRepeatBtn', `🔁 ${t.earRepeat}`);
+
+            const exerciseNames = {
+                he: null,
+                en: ['G Major','G Natural Minor','G Harmonic Minor','G Melodic Minor','G Major Arpeggio','G Minor Arpeggio'],
+                ru: ['Соль мажор','Соль натуральный минор','Соль гармонический минор','Соль мелодический минор','Арпеджио соль мажор','Арпеджио соль минор']
+            };
+            if (exerciseNames[lang]) {
+                document.querySelectorAll('.ex-select-btn').forEach((btn, i) => btn.textContent = exerciseNames[lang][i]);
+            }
+
+            renderSheetMusic();
+            renderFingerboard();
+            selectExercise(currentExerciseKey);
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                applyLanguage(lang);
+            });
+        });
+
+        applyLanguage(currentLanguage);
     </script>
 </body>
 </html>
