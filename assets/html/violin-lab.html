@@ -270,12 +270,8 @@
             <label for="practiceSectionSelect" class="text-xs font-bold" style="color: var(--text-secondary)">חלק לתרגול:</label>
             <select id="practiceSectionSelect" class="px-3 py-2.5 rounded-xl text-xs font-bold inset-box cursor-pointer focus:outline-none">
               <option value="all" data-section="all">התרגיל המלא</option>
-              <option value="half-0" data-section="half1">חצי ראשון</option>
-              <option value="half-1" data-section="half2">חצי שני</option>
-              <option value="quarter-0" data-section="quarter1">רבע 1 מתוך 4</option>
-              <option value="quarter-1" data-section="quarter2">רבע 2 מתוך 4</option>
-              <option value="quarter-2" data-section="quarter3">רבע 3 מתוך 4</option>
-              <option value="quarter-3" data-section="quarter4">רבע 4 מתוך 4</option>
+              <option value="half-0" data-section="half1">חצי ראשון — אוקטבה ראשונה (סול עד סול)</option>
+              <option value="half-1" data-section="half2">חצי שני — אוקטבה שנייה (סול עד סול)</option>
             </select>
 
             <button
@@ -1081,16 +1077,100 @@
         return seq;
       }
 
+      function getOctaveHalves(exKey) {
+        const ascending = buildExerciseSequence(exKey, "up_only");
+        const descending = buildExerciseSequence(exKey, "down_only");
+        const boundaryIndex = ascending.findIndex((item) => item.midi === ascending[0].midi + 12);
+
+        if (boundaryIndex < 1 || descending[boundaryIndex].midi !== ascending[boundaryIndex].midi) {
+          throw new Error(`Exercise ${exKey} does not have a two-octave G-to-G range.`);
+        }
+
+        return {
+          ascending: [ascending.slice(0, boundaryIndex + 1), ascending.slice(boundaryIndex)],
+          descending: [descending.slice(0, boundaryIndex + 1), descending.slice(boundaryIndex)],
+        };
+      }
+
       function getPracticeSequence() {
-        const sequence = buildExerciseSequence(currentExerciseKey, directionMode);
-        if (practiceSection === "all") return sequence;
+        const fullSequence = buildExerciseSequence(currentExerciseKey, directionMode);
+        if (practiceSection === "all") return fullSequence;
+
+        if (practiceSection === "remainder") {
+          return fullSequence.slice(Math.floor(fullSequence.length / 4) * 4);
+        }
 
         const [sectionType, sectionIndex] = practiceSection.split("-");
-        const sectionCount = sectionType === "half" ? 2 : 4;
         const index = Number(sectionIndex);
-        const start = Math.floor((sequence.length * index) / sectionCount);
-        const end = Math.floor((sequence.length * (index + 1)) / sectionCount);
-        return sequence.slice(start, end);
+
+        if (sectionType === "quarter") {
+          return fullSequence.slice(index * 4, index * 4 + 4);
+        }
+
+        if (sectionType === "half") {
+          const octaveHalves = getOctaveHalves(currentExerciseKey);
+          let selectedSequence;
+
+          if (directionMode === "up_only") {
+            selectedSequence = octaveHalves.ascending[index];
+          } else if (directionMode === "down_only") {
+            selectedSequence = octaveHalves.descending[index === 0 ? 0 : 1];
+          } else {
+            const ascendingHalf = octaveHalves.ascending[index];
+            const descendingHalf = octaveHalves.descending[index === 0 ? 1 : 0];
+            selectedSequence = ascendingHalf.concat(descendingHalf.slice(1));
+          }
+
+          return selectedSequence.map((item, stepIndex) => ({ ...item, stepIndex }));
+        }
+
+        throw new Error(`Unknown practice section: ${practiceSection}`);
+      }
+
+      function updatePracticeSectionOptions() {
+        const select = document.getElementById("practiceSectionSelect");
+        const labels = I18N[currentLanguage].practiceSections;
+        const sequenceLength = buildExerciseSequence(currentExerciseKey, directionMode).length;
+        const quarterCount = Math.floor(sequenceLength / 4);
+        const remainderCount = sequenceLength % 4;
+        const [sectionType, sectionIndex] = practiceSection.split("-");
+
+        if ((sectionType === "quarter" && Number(sectionIndex) >= quarterCount) || (practiceSection === "remainder" && remainderCount === 0)) {
+          practiceSection = "all";
+        }
+
+        select.replaceChildren();
+        [
+          ["all", "all"],
+          ["half-0", "half1"],
+          ["half-1", "half2"],
+        ].forEach(([value, labelKey]) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = labels[labelKey];
+          select.appendChild(option);
+        });
+
+        for (let index = 0; index < quarterCount; index++) {
+          const option = document.createElement("option");
+          const start = index * 4 + 1;
+          option.value = `quarter-${index}`;
+          option.textContent = labels.quarter
+            .replace("{index}", String(index + 1))
+            .replace("{start}", String(start))
+            .replace("{end}", String(start + 3));
+          select.appendChild(option);
+        }
+
+        if (remainderCount > 0) {
+          const option = document.createElement("option");
+          const start = quarterCount * 4 + 1;
+          option.value = "remainder";
+          option.textContent = labels.remainder.replace("{start}", String(start)).replace("{end}", String(sequenceLength));
+          select.appendChild(option);
+        }
+
+        select.value = practiceSection;
       }
 
       /**
@@ -1569,6 +1649,7 @@
         document.getElementById("scaleTheoryBadge").textContent = ex.badge;
         document.getElementById("scaleDescription").textContent = ex.description;
         document.getElementById("cycleCounter").textContent = "0";
+        updatePracticeSectionOptions();
 
         earTargetNote = null;
         document.getElementById("earRepeatBtn").disabled = true;
@@ -1644,6 +1725,7 @@
               b.classList.remove("bg-amber-600", "text-white");
             });
             btn.classList.add("bg-amber-600", "text-white");
+            updatePracticeSectionOptions();
             renderSheetMusic();
             renderFingerboard();
           });
@@ -1768,12 +1850,10 @@
           practiceSection: "חלק לתרגול:",
           practiceSections: {
             all: "התרגיל המלא",
-            half1: "חצי ראשון",
-            half2: "חצי שני",
-            quarter1: "רבע 1 מתוך 4",
-            quarter2: "רבע 2 מתוך 4",
-            quarter3: "רבע 3 מתוך 4",
-            quarter4: "רבע 4 מתוך 4",
+            half1: "חצי ראשון — אוקטבה ראשונה (סול עד סול)",
+            half2: "חצי שני — אוקטבה שנייה (סול עד סול)",
+            quarter: "רבע {index} (תווים {start}–{end})",
+            remainder: "תווים שנותרו ({start}–{end})",
           },
         },
         en: {
@@ -1799,12 +1879,10 @@
           practiceSection: "Practice section:",
           practiceSections: {
             all: "Full exercise",
-            half1: "First half",
-            half2: "Second half",
-            quarter1: "Quarter 1 of 4",
-            quarter2: "Quarter 2 of 4",
-            quarter3: "Quarter 3 of 4",
-            quarter4: "Quarter 4 of 4",
+            half1: "Half 1 — first octave (G to G)",
+            half2: "Half 2 — second octave (G to G)",
+            quarter: "Quarter {index} (notes {start}–{end})",
+            remainder: "Remaining notes ({start}–{end})",
           },
         },
         ru: {
@@ -1830,12 +1908,10 @@
           practiceSection: "Часть для практики:",
           practiceSections: {
             all: "Полное упражнение",
-            half1: "Первая половина",
-            half2: "Вторая половина",
-            quarter1: "Четверть 1 из 4",
-            quarter2: "Четверть 2 из 4",
-            quarter3: "Четверть 3 из 4",
-            quarter4: "Четверть 4 из 4",
+            half1: "Половина 1 — первая октава (соль–соль)",
+            half2: "Половина 2 — вторая октава (соль–соль)",
+            quarter: "Часть {index} (ноты {start}–{end})",
+            remainder: "Оставшиеся ноты ({start}–{end})",
           },
         },
       };
@@ -1877,9 +1953,7 @@
         setText("loopText", t.loop);
         setText("countInText", t.countIn);
         document.querySelector('label[for="practiceSectionSelect"]').textContent = t.practiceSection;
-        document.querySelectorAll("#practiceSectionSelect option").forEach((option) => {
-          option.textContent = t.practiceSections[option.dataset.section];
-        });
+        updatePracticeSectionOptions();
 
         setText("tapTempoBtn", `👆 ${t.tap}`);
         setText("metroBtnText", isStandaloneMetroOn ? t.metroRunning : t.metroOn);
