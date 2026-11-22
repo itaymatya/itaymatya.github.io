@@ -267,6 +267,17 @@
               <span id="playText">נגן סולם</span>
             </button>
 
+            <label for="practiceSectionSelect" class="text-xs font-bold" style="color: var(--text-secondary)">חלק לתרגול:</label>
+            <select id="practiceSectionSelect" class="px-3 py-2.5 rounded-xl text-xs font-bold inset-box cursor-pointer focus:outline-none">
+              <option value="all" data-section="all">התרגיל המלא</option>
+              <option value="half-0" data-section="half1">חצי ראשון</option>
+              <option value="half-1" data-section="half2">חצי שני</option>
+              <option value="quarter-0" data-section="quarter1">רבע 1 מתוך 4</option>
+              <option value="quarter-1" data-section="quarter2">רבע 2 מתוך 4</option>
+              <option value="quarter-2" data-section="quarter3">רבע 3 מתוך 4</option>
+              <option value="quarter-3" data-section="quarter4">רבע 4 מתוך 4</option>
+            </select>
+
             <button
               id="instrumentToggle"
               type="button"
@@ -1021,6 +1032,7 @@
        */
       let currentExerciseKey = "g_major";
       let directionMode = "up_down"; // 'up_down' | 'up_only' | 'down_only'
+      let practiceSection = "all";
       let isLoopEnabled = false;
       let isCountInEnabled = true;
 
@@ -1069,13 +1081,25 @@
         return seq;
       }
 
+      function getPracticeSequence() {
+        const sequence = buildExerciseSequence(currentExerciseKey, directionMode);
+        if (practiceSection === "all") return sequence;
+
+        const [sectionType, sectionIndex] = practiceSection.split("-");
+        const sectionCount = sectionType === "half" ? 2 : 4;
+        const index = Number(sectionIndex);
+        const start = Math.floor((sequence.length * index) / sectionCount);
+        const end = Math.floor((sequence.length * (index + 1)) / sectionCount);
+        return sequence.slice(start, end);
+      }
+
       /**
        * ============================================================================
        * 4. רינדור חמשת התווים (ABCjs) והדגשה בזמן אמת
        * ============================================================================
        */
       function renderSheetMusic() {
-        currentSequence = buildExerciseSequence(currentExerciseKey, directionMode);
+        currentSequence = getPracticeSequence();
 
         let notesChunk = [];
         let lyricsChunk = [];
@@ -1625,6 +1649,13 @@
           });
         });
 
+        document.getElementById("practiceSectionSelect").addEventListener("change", (event) => {
+          if (isScalePlaying) stopScalePlayback();
+          practiceSection = event.target.value;
+          document.getElementById("cycleCounter").textContent = "0";
+          renderSheetMusic();
+        });
+
         // 6. בקרת צליל עוגן (Drone)
         const setDroneUI = (activeId, type) => {
           document.querySelectorAll(".drone-sel-btn").forEach((b) => {
@@ -1734,6 +1765,16 @@
           metroOn: "הפעל מטרונום",
           earPlay: "השמע תו אקראי",
           earRepeat: "שוב",
+          practiceSection: "חלק לתרגול:",
+          practiceSections: {
+            all: "התרגיל המלא",
+            half1: "חצי ראשון",
+            half2: "חצי שני",
+            quarter1: "רבע 1 מתוך 4",
+            quarter2: "רבע 2 מתוך 4",
+            quarter3: "רבע 3 מתוך 4",
+            quarter4: "רבע 4 מתוך 4",
+          },
         },
         en: {
           title: "Violin Practice Lab — Fixed Solfège",
@@ -1755,6 +1796,16 @@
           metroOn: "Turn On Metronome",
           earPlay: "Play Random Note",
           earRepeat: "Repeat",
+          practiceSection: "Practice section:",
+          practiceSections: {
+            all: "Full exercise",
+            half1: "First half",
+            half2: "Second half",
+            quarter1: "Quarter 1 of 4",
+            quarter2: "Quarter 2 of 4",
+            quarter3: "Quarter 3 of 4",
+            quarter4: "Quarter 4 of 4",
+          },
         },
         ru: {
           title: "Лаборатория практики скрипки — Фиксированная сольфеджио",
@@ -1776,6 +1827,16 @@
           metroOn: "Включить метроном",
           earPlay: "Играть случайную ноту",
           earRepeat: "Повторить",
+          practiceSection: "Часть для практики:",
+          practiceSections: {
+            all: "Полное упражнение",
+            half1: "Первая половина",
+            half2: "Вторая половина",
+            quarter1: "Четверть 1 из 4",
+            quarter2: "Четверть 2 из 4",
+            quarter3: "Четверть 3 из 4",
+            quarter4: "Четверть 4 из 4",
+          },
         },
       };
 
@@ -1815,6 +1876,10 @@
         setText("playText", isScalePlaying ? t.stopScale : t.playScale);
         setText("loopText", t.loop);
         setText("countInText", t.countIn);
+        document.querySelector('label[for="practiceSectionSelect"]').textContent = t.practiceSection;
+        document.querySelectorAll("#practiceSectionSelect option").forEach((option) => {
+          option.textContent = t.practiceSections[option.dataset.section];
+        });
 
         setText("tapTempoBtn", `👆 ${t.tap}`);
         setText("metroBtnText", isStandaloneMetroOn ? t.metroRunning : t.metroOn);
