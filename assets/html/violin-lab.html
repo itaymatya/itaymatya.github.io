@@ -501,6 +501,7 @@
           this.droneNodes = null;
           this.droneType = "off"; // 'off' | 'sol' | 're'
           this.sampleCache = new Map();
+          this.sampleLoads = new Map();
           this.samplePaths = {
             55: "G3.mp3",
             57: "A3.mp3",
@@ -539,11 +540,47 @@
           return this.a4Freq * Math.pow(2, (midi - 69) / 12);
         }
 
+        loadViolinSample(fileName) {
+          if (this.sampleCache.has(fileName)) return Promise.resolve(this.sampleCache.get(fileName));
+          if (this.sampleLoads.has(fileName)) return this.sampleLoads.get(fileName);
+
+          const sampleLoad = fetch(`../audio/violin-samples/${fileName}`)
+            .then((response) => {
+              if (!response.ok) throw new Error(`Violin sample unavailable: ${fileName}`);
+              return response.arrayBuffer();
+            })
+            .then((data) => this.ctx.decodeAudioData(data))
+            .then((buffer) => {
+              this.sampleCache.set(fileName, buffer);
+              this.sampleLoads.delete(fileName);
+              return buffer;
+            })
+            .catch((error) => {
+              this.sampleLoads.delete(fileName);
+              throw error;
+            });
+
+          this.sampleLoads.set(fileName, sampleLoad);
+          return sampleLoad;
+        }
+
+        async preloadViolinNotes(midis) {
+          const available = Object.keys(this.samplePaths).map(Number);
+          const fileNames = new Set(
+            midis.map((midi) => {
+              const sourceMidi = available.reduce((best, candidate) =>
+                Math.abs(candidate - midi) < Math.abs(best - midi) ? candidate : best
+              );
+              return this.samplePaths[sourceMidi];
+            })
+          );
+          await Promise.all([...fileNames].map((fileName) => this.loadViolinSample(fileName)));
+        }
+
         // Play a real bowed-violin recording. Near pitches are transposed by a small playback-rate adjustment.
         async playViolinNote(midi, durationSec = 0.6, startTimeOffset = 0) {
           this.init();
-          const now = this.ctx.currentTime + startTimeOffset;
-          let targetMidi = midi;
+          const targetMidi = midi;
 
           const available = Object.keys(this.samplePaths).map(Number);
           let sourceMidi = available.reduce((best, candidate) => (Math.abs(candidate - targetMidi) < Math.abs(best - targetMidi) ? candidate : best));
@@ -552,14 +589,11 @@
           if (!fileName) return;
 
           try {
-            let buffer = this.sampleCache.get(fileName);
-            if (!buffer) {
-              const response = await fetch(`../audio/violin-samples/${fileName}`);
-              if (!response.ok) throw new Error(`Violin sample unavailable: ${fileName}`);
-              const data = await response.arrayBuffer();
-              buffer = await this.ctx.decodeAudioData(data);
-              this.sampleCache.set(fileName, buffer);
-            }
+            const buffer = await this.loadViolinSample(fileName);
+            const now = this.ctx.currentTime + startTimeOffset;
+            const noteEnd = now + durationSec + 0.04;
+            const attackSec = Math.min(0.025, durationSec * 0.2);
+            const releaseSec = Math.min(0.08, durationSec * 0.35);
 
             const source = this.ctx.createBufferSource();
             const gain = this.ctx.createGain();
@@ -569,14 +603,14 @@
             filter.type = "lowpass";
             filter.frequency.value = 9000;
             gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.72, now + 0.025);
-            gain.gain.setValueAtTime(0.62, now + Math.max(0.07, durationSec - 0.08));
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+            gain.gain.linearRampToValueAtTime(0.72, now + attackSec);
+            gain.gain.setValueAtTime(0.62, Math.max(now + attackSec, noteEnd - releaseSec));
+            gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
             source.connect(filter);
             filter.connect(gain);
             gain.connect(this.ctx.destination);
-            source.start(now, 0, durationSec);
-            source.stop(now + durationSec + 0.03);
+            source.start(now);
+            source.stop(noteEnd);
           } catch (error) {
             console.warn(error);
           }
@@ -848,6 +882,7 @@
       let isCountInEnabled = true;
 
       let isScalePlaying = false;
+      let scalePlaybackRequest = 0;
       let isStandaloneMetroOn = false;
       let bpm = 76;
       let subdivision = 1; // 1 = רבעים, 2 = שמיניות
@@ -1207,7 +1242,7 @@
 
             if (isScalePlaying && playStepIndex < currentSequence.length) {
               const item = currentSequence[playStepIndex];
-              const noteDurationSec = Math.max(0.18, (stepMs / 1000) * 0.9);
+              const noteDurationSec = stepMs / 1000;
 
               audioEngine.playViolinNote(item.midi, noteDurationSec);
               highlightSheetNote(playStepIndex);
@@ -1223,13 +1258,10 @@
         schedulerTimer = setTimeout(runEngineTick, stepMs);
       }
 
-      function startScalePlayback() {
+      async function startScalePlayback() {
         audioEngine.init();
+        const playbackRequest = ++scalePlaybackRequest;
         isScalePlaying = true;
-        playStepIndex = 0;
-        cycleCount = 1;
-        document.getElementById("cycleCounter").textContent = cycleCount;
-        countInRemaining = isCountInEnabled ? 4 : 0;
 
         const playBtn = document.getElementById("playStopBtn");
         playBtn.classList.remove("bg-emerald-600", "hover:bg-emerald-500");
@@ -1237,10 +1269,27 @@
         document.getElementById("playIcon").textContent = "⏹";
         document.getElementById("playText").textContent = "עצור נגינה";
 
+        try {
+          await audioEngine.preloadViolinNotes(currentSequence.map((item) => item.midi));
+        } catch (error) {
+          if (playbackRequest !== scalePlaybackRequest) return;
+          console.error(error);
+          stopScalePlayback();
+          window.alert("Unable to load violin samples. Please check your connection and try again.");
+          return;
+        }
+
+        if (!isScalePlaying || playbackRequest !== scalePlaybackRequest) return;
+
+        playStepIndex = 0;
+        cycleCount = 1;
+        document.getElementById("cycleCounter").textContent = cycleCount;
+        countInRemaining = isCountInEnabled ? 4 : 0;
         startEngineLoop();
       }
 
       function stopScalePlayback() {
+        scalePlaybackRequest++;
         isScalePlaying = false;
         playStepIndex = 0;
         countInRemaining = 0;
