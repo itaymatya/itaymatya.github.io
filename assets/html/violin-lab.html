@@ -1,1509 +1,1625 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>מעבדת אימון לכינור — סולפג' קבוע, מטרונום ולופ</title>
     <!-- טעינת גופן עברי מודרני וקריא -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
     <!-- טעינת Tailwind CSS לעיצוב רספונסיבי מותאם לעמוד תווים -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- טעינת ספריית ABCjs לציור תווים על חמשה -->
     <script src="https://cdn.jsdelivr.net/npm/abcjs@6.4.4/dist/abcjs-basic-min.js"></script>
 
     <style>
-        :root {
-            --bg-primary: #120e0b;
-            --bg-secondary: #1c1612;
-            --bg-card: #221a15;
-            --bg-inset: #16110d;
-            --text-primary: #fdf8f3;
-            --text-secondary: #bcaaa4;
-            --accent-amber: #f59e0b;
-            --accent-gold: #fbbf24;
-            --accent-emerald: #10b981;
-            --accent-rose: #f43f5e;
-            --border-color: #3e2f26;
-        }
+      :root {
+        --bg-primary: #120e0b;
+        --bg-secondary: #1c1612;
+        --bg-card: #221a15;
+        --bg-inset: #16110d;
+        --text-primary: #fdf8f3;
+        --text-secondary: #bcaaa4;
+        --accent-amber: #f59e0b;
+        --accent-gold: #fbbf24;
+        --accent-emerald: #10b981;
+        --accent-rose: #f43f5e;
+        --border-color: #3e2f26;
+      }
 
-        body.light-theme {
-            --bg-primary: #f7f3ee;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --bg-inset: #f0e8df;
-            --text-primary: #1f1712;
-            --text-secondary: #5d4c41;
-            --accent-amber: #d97706;
-            --accent-gold: #b45309;
-            --accent-emerald: #059669;
-            --accent-rose: #e11d48;
-            --border-color: #d6c7b8;
-        }
+      body.light-theme {
+        --bg-primary: #f7f3ee;
+        --bg-secondary: #ffffff;
+        --bg-card: #ffffff;
+        --bg-inset: #f0e8df;
+        --text-primary: #1f1712;
+        --text-secondary: #5d4c41;
+        --accent-amber: #d97706;
+        --accent-gold: #b45309;
+        --accent-emerald: #059669;
+        --accent-rose: #e11d48;
+        --border-color: #d6c7b8;
+      }
 
-        body {
-            font-family: 'Heebo', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            transition: background-color 0.25s, color 0.25s;
-            margin: 0;
-            padding: 0;
-        }
+      body {
+        font-family: "Heebo", sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        transition:
+          background-color 0.25s,
+          color 0.25s;
+        margin: 0;
+        padding: 0;
+      }
 
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
-        }
+      .card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 1rem;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+      }
 
-        .inset-box {
-            background-color: var(--bg-inset);
-            border: 1px solid var(--border-color);
-        }
+      .inset-box {
+        background-color: var(--bg-inset);
+        border: 1px solid var(--border-color);
+      }
 
-        /* התאמת תצוגת החמשה של ABCjs שתמיד תיקרא משמאל לימין */
-        .sheet-music-wrapper {
-            direction: ltr;
-            background-color: #fffdf9;
-            color: #1c1917;
-            border-radius: 0.85rem;
-            padding: 0.85rem 1rem;
-            overflow-x: auto;
-            border: 2px solid var(--border-color);
-        }
+      /* התאמת תצוגת החמשה של ABCjs שתמיד תיקרא משמאל לימין */
+      .sheet-music-wrapper {
+        direction: ltr;
+        background-color: #fffdf9;
+        color: #1c1917;
+        border-radius: 0.85rem;
+        padding: 0.85rem 1rem;
+        overflow-x: auto;
+        border: 2px solid var(--border-color);
+      }
 
-        /* הדגשה זוהרת של התו המנוגן כעת בתוך החמשה */
-        .abcjs-highlight {
-            fill: #e11d48 !important;
-            stroke: #e11d48 !important;
-            filter: drop-shadow(0 0 6px rgba(225, 29, 72, 0.55));
-            transition: all 0.12s ease;
-        }
+      /* הדגשה זוהרת של התו המנוגן כעת בתוך החמשה */
+      .abcjs-highlight {
+        fill: #e11d48 !important;
+        stroke: #e11d48 !important;
+        filter: drop-shadow(0 0 6px rgba(225, 29, 72, 0.55));
+        transition: all 0.12s ease;
+      }
 
-        /* אנימציית פעימה לכרטיס התו החי */
-        @keyframes notePulse {
-            0% { transform: scale(0.95); }
-            45% { transform: scale(1.04); }
-            100% { transform: scale(1); }
+      /* אנימציית פעימה לכרטיס התו החי */
+      @keyframes notePulse {
+        0% {
+          transform: scale(0.95);
         }
-        .animate-note-hit {
-            animation: notePulse 0.22s ease-out;
+        45% {
+          transform: scale(1.04);
         }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .animate-note-hit {
+        animation: notePulse 0.22s ease-out;
+      }
 
-        /* נוריות מטרונום */
-        .beat-led {
-            transition: transform 0.08s ease, background-color 0.08s ease, box-shadow 0.08s ease;
-        }
-        .beat-led.active-accent {
-            background-color: #f59e0b !important;
-            box-shadow: 0 0 14px #f59e0b;
-            transform: scale(1.22);
-        }
-        .beat-led.active-regular {
-            background-color: #10b981 !important;
-            box-shadow: 0 0 12px #10b981;
-            transform: scale(1.15);
-        }
+      /* נוריות מטרונום */
+      .beat-led {
+        transition:
+          transform 0.08s ease,
+          background-color 0.08s ease,
+          box-shadow 0.08s ease;
+      }
+      .beat-led.active-accent {
+        background-color: #f59e0b !important;
+        box-shadow: 0 0 14px #f59e0b;
+        transform: scale(1.22);
+      }
+      .beat-led.active-regular {
+        background-color: #10b981 !important;
+        box-shadow: 0 0 12px #10b981;
+        transform: scale(1.15);
+      }
 
-        /* עיצוב שחיף הכינור */
-        .fingerboard-container {
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+      /* עיצוב שחיף הכינור */
+      .fingerboard-container {
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
 
-        .note-marker {
-            cursor: pointer;
-            transition: filter 0.15s ease;
-        }
-        .note-marker:hover {
-            filter: brightness(1.22);
-        }
-        .note-marker.active-playing circle {
-            fill: #e11d48 !important;
-            stroke: #ffffff !important;
-            stroke-width: 3.5px !important;
-            r: 20px;
-            filter: drop-shadow(0 0 8px rgba(225, 29, 72, 0.85));
-        }
+      .note-marker {
+        cursor: pointer;
+        transition: filter 0.15s ease;
+      }
+      .note-marker:hover {
+        filter: brightness(1.22);
+      }
+      .note-marker.active-playing circle {
+        fill: #e11d48 !important;
+        stroke: #ffffff !important;
+        stroke-width: 3.5px !important;
+        r: 20px;
+        filter: drop-shadow(0 0 8px rgba(225, 29, 72, 0.85));
+      }
 
-        input[type="range"] {
-            accent-color: var(--accent-amber);
-        }
+      input[type="range"] {
+        accent-color: var(--accent-amber);
+      }
 
-        .language-switcher button.active {
-            background: var(--accent-amber);
-            color: white;
-            border-color: var(--accent-amber);
-        }
+      .language-switcher {
+        position: relative;
+        z-index: 20;
+        min-height: 38px;
+        background: var(--bg-inset);
+        border: 1px solid var(--accent-amber);
+      }
 
-        html[lang="ru"] body,
-        html[lang="en"] body {
-            direction: ltr;
-        }
+      .lang-btn {
+        color: var(--text-primary);
+        background: transparent;
+        min-width: 38px;
+        min-height: 32px;
+      }
 
-        html[lang="he"] body {
-            direction: rtl;
-        }
+      .language-switcher button.active {
+        background: var(--accent-amber);
+        color: #fff;
+        border-color: var(--accent-amber);
+      }
+
+      html[lang="ru"] body,
+      html[lang="en"] body {
+        direction: ltr;
+      }
+
+      html[lang="he"] body {
+        direction: rtl;
+      }
     </style>
-</head>
-<body class="min-h-screen p-3 md:p-5" dir="rtl">
-
+  </head>
+  <body class="min-h-screen p-3 md:p-5" dir="rtl">
     <!-- מיכל ראשי מותאם לתצוגת עמוד תווים (טאבלט / מחשב) -->
     <div id="violin-app" class="max-w-6xl mx-auto space-y-4">
+      <!-- 1. כותרת עליונה ובקרת כיוון תזמורתי -->
+      <header class="card p-4 md:px-6 md:py-4 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl">🎻</span>
+            <h1 class="text-xl md:text-2xl font-black tracking-tight">מעבדת אימון לכינור — סולפג' קבוע</h1>
+          </div>
+          <p class="text-xs md:text-sm mt-0.5" style="color: var(--text-secondary)">
+            סולמות, ארפג'יו, מטרונום, נגינה בלופ ואילוסטרציה חיה (דו, רה, מי, פה, סול, לה, סי)
+          </p>
+        </div>
 
-        <!-- 1. כותרת עליונה ובקרת כיוון תזמורתי -->
-        <header class="card p-4 md:px-6 md:py-4 flex flex-col md:flex-row justify-between items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div class="language-switcher flex items-center gap-1 p-1 rounded-xl inset-box" aria-label="Language">
+            <button type="button" data-lang="he" class="lang-btn active px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="עברית">
+              עב
+            </button>
+            <button type="button" data-lang="en" class="lang-btn px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="English">
+              EN
+            </button>
+            <button type="button" data-lang="ru" class="lang-btn px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="Русский">
+              RU
+            </button>
+          </div>
+
+          <!-- מתג תדר כיוון לה = 440Hz / 442Hz -->
+          <button
+            id="tuningToggle"
+            class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold border transition flex items-center gap-2 inset-box hover:border-amber-500/60"
+          >
+            <span>🎵 כיוון תזמורתי:</span>
+            <span id="tuningLabel" class="text-amber-400">לה = 440 הרץ</span>
+          </button>
+
+          <!-- מתג מצב בהיר/כהה -->
+          <button
+            id="themeToggle"
+            class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold border transition inset-box hover:border-amber-500/60"
+            title="החלף ערכת נושא"
+          >
+            🌓 ערכת צבע
+          </button>
+        </div>
+      </header>
+
+      <!-- 2. בחירת סולם / תרגיל -->
+      <section class="card p-4 md:p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <h2 class="text-base md:text-lg font-extrabold flex items-center gap-2"><span>🎼</span> בחר סולם או ארפג'יו (2 אוקטבות ממיתר סול פתוח):</h2>
+          <span id="scaleTheoryBadge" class="text-xs px-3 py-1 rounded-full font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">
+            סימן מפתח: פה♯
+          </span>
+        </div>
+
+        <!-- כפתורי בחירת התרגיל -->
+        <div id="exerciseButtons" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          <!-- נוצר דינמית -->
+        </div>
+
+        <!-- הסבר מוזיקלי וטכני קצר -->
+        <div
+          id="scaleDescription"
+          class="mt-3 p-3 rounded-xl text-xs md:text-sm leading-relaxed inset-box"
+          style="color: var(--text-secondary)"
+        ></div>
+      </section>
+
+      <!-- 3. מרכז שליטה: נגן לופ + מטרונום מובנה + צליל עוגן -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- פאנל נגינת סולם, מצבי כיוון ולופ (7 עמודות) -->
+        <div class="card p-4 md:p-5 lg:col-span-7 flex flex-col justify-between gap-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3" style="border-color: var(--border-color)">
+            <h3 class="text-base font-extrabold flex items-center gap-2 text-amber-400"><span>▶️</span> בקרת נגינה, כיוון ולופ</h3>
+            <!-- מונה מחזורי לופ -->
+            <div class="flex items-center gap-2 text-xs font-bold px-3 py-1 rounded-full inset-box">
+              <span>מחזור אימון:</span>
+              <span id="cycleCounter" class="text-amber-400 text-sm font-black">0</span>
+            </div>
+          </div>
+
+          <!-- כפתורי הפעלה מרכזיים -->
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button
+              id="playStopBtn"
+              class="px-5 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition shadow-lg flex items-center gap-2 text-sm md:text-base"
+            >
+              <span id="playIcon">▶</span>
+              <span id="playText">נגן סולם</span>
+            </button>
+
+            <!-- מתג לופ רציף -->
+            <button id="loopToggleBtn" class="px-4 py-3 rounded-xl font-bold border transition flex items-center gap-2 text-xs md:text-sm inset-box">
+              <span id="loopLed" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+              <span id="loopText">לופ רציף</span>
+            </button>
+
+            <!-- מתג ספירה מקדימה 1-2-3-4 -->
+            <button
+              id="countInToggleBtn"
+              class="px-3.5 py-3 rounded-xl font-bold border transition flex items-center gap-2 text-xs md:text-sm border-amber-500/60 text-amber-400 inset-box"
+            >
+              <span id="countInLed" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span id="countInText">ספירה מקדימה (4)</span>
+            </button>
+          </div>
+
+          <!-- בחירת כיוון תרגול (עלייה וירידה / עלייה / ירידה) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-                <div class="flex items-center gap-2.5">
-                    <span class="text-3xl">🎻</span>
-                    <h1 class="text-xl md:text-2xl font-black tracking-tight">מעבדת אימון לכינור — סולפג' קבוע</h1>
-                </div>
-                <p class="text-xs md:text-sm mt-0.5" style="color: var(--text-secondary);">
-                    סולמות, ארפג'יו, מטרונום, נגינה בלופ ואילוסטרציה חיה (דו, רה, מי, פה, סול, לה, סי)
-                </p>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2.5">
-                <div class="language-switcher flex items-center gap-1 p-1 rounded-xl inset-box" aria-label="Language">
-                    <button type="button" data-lang="he" class="lang-btn active px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="עברית">עב</button>
-                    <button type="button" data-lang="en" class="lang-btn px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="English">EN</button>
-                    <button type="button" data-lang="ru" class="lang-btn px-2.5 py-1.5 rounded-lg text-xs font-bold border transition" title="Русский">RU</button>
-                </div>
-
-                <!-- מתג תדר כיוון לה = 440Hz / 442Hz -->
-                <button id="tuningToggle" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold border transition flex items-center gap-2 inset-box hover:border-amber-500/60">
-                    <span>🎵 כיוון תזמורתי:</span>
-                    <span id="tuningLabel" class="text-amber-400">לה = 440 הרץ</span>
+              <label class="block text-xs font-bold mb-1.5" style="color: var(--text-secondary)">כיוון תנועה בסולם:</label>
+              <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl inset-box" id="directionSelector">
+                <button data-dir="up_down" class="dir-btn py-2 px-2 rounded-lg text-xs font-bold bg-amber-600 text-white transition">
+                  עלייה וירידה
                 </button>
-
-                <!-- מתג מצב בהיר/כהה -->
-                <button id="themeToggle" class="px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold border transition inset-box hover:border-amber-500/60"
-                        title="החלף ערכת נושא">
-                    🌓 ערכת צבע
-                </button>
-            </div>
-        </header>
-
-        <!-- 2. בחירת סולם / תרגיל -->
-        <section class="card p-4 md:p-5">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                <h2 class="text-base md:text-lg font-extrabold flex items-center gap-2">
-                    <span>🎼</span> בחר סולם או ארפג'יו (2 אוקטבות ממיתר סול פתוח):
-                </h2>
-                <span id="scaleTheoryBadge" class="text-xs px-3 py-1 rounded-full font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40">
-                    סימן מפתח: פה♯
-                </span>
+                <button data-dir="up_only" class="dir-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">עלייה בלבד</button>
+                <button data-dir="down_only" class="dir-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">ירידה בלבד</button>
+              </div>
             </div>
 
-            <!-- כפתורי בחירת התרגיל -->
-            <div id="exerciseButtons" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-                <!-- נוצר דינמית -->
+            <!-- צליל עוגן (Drone) לאימון על אינטונציה -->
+            <div>
+              <label class="block text-xs font-bold mb-1.5" style="color: var(--text-secondary)">צליל עוגן מתמשך (אינטונציה):</label>
+              <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl inset-box">
+                <button id="droneOffBtn" class="drone-sel-btn py-2 px-2 rounded-lg text-xs font-bold bg-amber-600 text-white transition">כבוי</button>
+                <button id="droneSolBtn" class="drone-sel-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">עוגן סול</button>
+                <button id="droneReBtn" class="drone-sel-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">עוגן רה</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- פאנל מטרונום מובנה (5 עמודות) -->
+        <div class="card p-4 md:p-5 lg:col-span-5 flex flex-col justify-between gap-3">
+          <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-color)">
+            <h3 class="text-base font-extrabold flex items-center gap-2 text-amber-400"><span>⏱️</span> מטרונום מובנה</h3>
+
+            <!-- 4 נוריות פעימה ויזואליות -->
+            <div class="flex items-center gap-2" id="metronomeLeds" dir="ltr">
+              <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="0"></span>
+              <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="1"></span>
+              <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="2"></span>
+              <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="3"></span>
+            </div>
+          </div>
+
+          <!-- שליטת קצב (BPM) + כפתורי פלוס/מינוס + Tap Tempo -->
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5">
+              <button
+                id="bpmMinusBtn"
+                class="w-9 h-9 rounded-xl font-black text-lg inset-box hover:border-amber-500 transition flex items-center justify-center"
+              >
+                -
+              </button>
+              <div class="px-3 py-1 rounded-xl inset-box text-center min-w-[88px]">
+                <span id="bpmValue" class="text-xl font-black text-amber-400">76</span>
+                <span class="text-[11px] block" style="color: var(--text-secondary)">פעימות לדקה</span>
+              </div>
+              <button
+                id="bpmPlusBtn"
+                class="w-9 h-9 rounded-xl font-black text-lg inset-box hover:border-amber-500 transition flex items-center justify-center"
+              >
+                +
+              </button>
             </div>
 
-            <!-- הסבר מוזיקלי וטכני קצר -->
-            <div id="scaleDescription" class="mt-3 p-3 rounded-xl text-xs md:text-sm leading-relaxed inset-box"
-                 style="color: var(--text-secondary);">
-            </div>
-        </section>
+            <button
+              id="tapTempoBtn"
+              class="px-3.5 py-2.5 rounded-xl text-xs font-extrabold inset-box hover:border-amber-500 active:scale-95 transition"
+            >
+              👆 הקש קצב
+            </button>
+          </div>
 
-        <!-- 3. מרכז שליטה: נגן לופ + מטרונום מובנה + צליל עוגן -->
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <!-- סליידר טמפו -->
+          <input type="range" id="bpmSlider" min="40" max="180" value="76" class="w-full cursor-pointer" />
 
-            <!-- פאנל נגינת סולם, מצבי כיוון ולופ (7 עמודות) -->
-            <div class="card p-4 md:p-5 lg:col-span-7 flex flex-col justify-between gap-4">
-                <div class="flex flex-wrap items-center justify-between gap-2 border-b pb-3" style="border-color: var(--border-color);">
-                    <h3 class="text-base font-extrabold flex items-center gap-2 text-amber-400">
-                        <span>▶️</span> בקרת נגינה, כיוון ולופ
-                    </h3>
-                    <!-- מונה מחזורי לופ -->
-                    <div class="flex items-center gap-2 text-xs font-bold px-3 py-1 rounded-full inset-box">
-                        <span>מחזור אימון:</span>
-                        <span id="cycleCounter" class="text-amber-400 text-sm font-black">0</span>
-                    </div>
-                </div>
+          <!-- כפתור הפעלת מטרונום עצמאי + בחירת חלוקת קצב -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <button
+              id="metroToggleBtn"
+              class="px-4 py-2 rounded-xl text-xs md:text-sm font-extrabold border transition flex items-center gap-2 inset-box"
+            >
+              <span id="metroLed" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+              <span id="metroBtnText">הפעל מטרונום</span>
+            </button>
 
-                <!-- כפתורי הפעלה מרכזיים -->
-                <div class="flex flex-wrap items-center gap-2.5">
-                    <button id="playStopBtn" class="px-5 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition shadow-lg flex items-center gap-2 text-sm md:text-base">
-                        <span id="playIcon">▶</span>
-                        <span id="playText">נגן סולם</span>
-                    </button>
+            <!-- חלוקת תווים לפעימה -->
+            <select id="subdivisionSelect" class="px-3 py-2 rounded-xl text-xs font-bold inset-box cursor-pointer focus:outline-none">
+              <option value="1">רבעים (תו 1 לפעימה)</option>
+              <option value="2">שמיניות (2 תווים לפעימה)</option>
+            </select>
+          </div>
+        </div>
+      </section>
 
-                    <!-- מתג לופ רציף -->
-                    <button id="loopToggleBtn" class="px-4 py-3 rounded-xl font-bold border transition flex items-center gap-2 text-xs md:text-sm inset-box">
-                        <span id="loopLed" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-                        <span>לופ רציף</span>
-                    </button>
+      <!-- 4. אילוסטרציה חיה של התו המתנגן + חמשת התווים -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- כרטיס אילוסטרציה חיה בזמן אמת (4 עמודות) -->
+        <div class="card p-4 md:p-5 lg:col-span-4 flex flex-col justify-between relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm md:text-base font-extrabold flex items-center gap-2 text-amber-400"><span>✨</span> תו מתנגן בזמן אמת</h2>
+            <span id="liveDirectionBadge" class="text-xs font-bold px-2.5 py-1 rounded-full inset-box"> מוכן לנגינה </span>
+          </div>
 
-                    <!-- מתג ספירה מקדימה 1-2-3-4 -->
-                    <button id="countInToggleBtn" class="px-3.5 py-3 rounded-xl font-bold border transition flex items-center gap-2 text-xs md:text-sm border-amber-500/60 text-amber-400 inset-box">
-                        <span id="countInLed" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-                        <span>ספירה מקדימה (4)</span>
-                    </button>
-                </div>
-
-                <!-- בחירת כיוון תרגול (עלייה וירידה / עלייה / ירידה) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-bold mb-1.5" style="color: var(--text-secondary);">כיוון תנועה בסולם:</label>
-                        <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl inset-box" id="directionSelector">
-                            <button data-dir="up_down" class="dir-btn py-2 px-2 rounded-lg text-xs font-bold bg-amber-600 text-white transition">עלייה וירידה</button>
-                            <button data-dir="up_only" class="dir-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">עלייה בלבד</button>
-                            <button data-dir="down_only" class="dir-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">ירידה בלבד</button>
-                        </div>
-                    </div>
-
-                    <!-- צליל עוגן (Drone) לאימון על אינטונציה -->
-                    <div>
-                        <label class="block text-xs font-bold mb-1.5" style="color: var(--text-secondary);">צליל עוגן מתמשך (אינטונציה):</label>
-                        <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl inset-box">
-                            <button id="droneOffBtn" class="drone-sel-btn py-2 px-2 rounded-lg text-xs font-bold bg-amber-600 text-white transition">כבוי</button>
-                            <button id="droneSolBtn" class="drone-sel-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">עוגן סול</button>
-                            <button id="droneReBtn" class="drone-sel-btn py-2 px-2 rounded-lg text-xs font-bold transition hover:bg-white/5">עוגן רה</button>
-                        </div>
-                    </div>
-                </div>
+          <!-- תצוגת סולפג' מרכזית מוגדלת עם מד גובה צליל -->
+          <div id="liveIllustrationBox" class="my-3 p-4 rounded-2xl inset-box flex items-center justify-between gap-3">
+            <div class="flex-1 text-center">
+              <div class="text-xs font-semibold" style="color: var(--text-secondary)">שם התו (סולפג')</div>
+              <div id="liveNoteName" class="text-4xl md:text-5xl font-black text-amber-400 my-1 tracking-wide">—</div>
+              <div id="liveStatusSubtext" class="text-xs font-bold text-emerald-400">בחר סולם ולחץ נגן</div>
             </div>
 
-            <!-- פאנל מטרונום מובנה (5 עמודות) -->
-            <div class="card p-4 md:p-5 lg:col-span-5 flex flex-col justify-between gap-3">
-                <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-color);">
-                    <h3 class="text-base font-extrabold flex items-center gap-2 text-amber-400">
-                        <span>⏱️</span> מטרונום מובנה
-                    </h3>
-
-                    <!-- 4 נוריות פעימה ויזואליות -->
-                    <div class="flex items-center gap-2" id="metronomeLeds" dir="ltr">
-                        <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="0"></span>
-                        <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="1"></span>
-                        <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="2"></span>
-                        <span class="beat-led w-3.5 h-3.5 rounded-full bg-slate-600" data-beat="3"></span>
-                    </div>
-                </div>
-
-                <!-- שליטת קצב (BPM) + כפתורי פלוס/מינוס + Tap Tempo -->
-                <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center gap-1.5">
-                        <button id="bpmMinusBtn" class="w-9 h-9 rounded-xl font-black text-lg inset-box hover:border-amber-500 transition flex items-center justify-center">-</button>
-                        <div class="px-3 py-1 rounded-xl inset-box text-center min-w-[88px]">
-                            <span id="bpmValue" class="text-xl font-black text-amber-400">76</span>
-                            <span class="text-[11px] block" style="color: var(--text-secondary);">פעימות לדקה</span>
-                        </div>
-                        <button id="bpmPlusBtn" class="w-9 h-9 rounded-xl font-black text-lg inset-box hover:border-amber-500 transition flex items-center justify-center">+</button>
-                    </div>
-
-                    <button id="tapTempoBtn" class="px-3.5 py-2.5 rounded-xl text-xs font-extrabold inset-box hover:border-amber-500 active:scale-95 transition">
-                        👆 הקש קצב
-                    </button>
-                </div>
-
-                <!-- סליידר טמפו -->
-                <input type="range" id="bpmSlider" min="40" max="180" value="76" class="w-full cursor-pointer">
-
-                <!-- כפתור הפעלת מטרונום עצמאי + בחירת חלוקת קצב -->
-                <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-                    <button id="metroToggleBtn" class="px-4 py-2 rounded-xl text-xs md:text-sm font-extrabold border transition flex items-center gap-2 inset-box">
-                        <span id="metroLed" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-                        <span id="metroBtnText">הפעל מטרונום</span>
-                    </button>
-
-                    <!-- חלוקת תווים לפעימה -->
-                    <select id="subdivisionSelect" class="px-3 py-2 rounded-xl text-xs font-bold inset-box cursor-pointer focus:outline-none">
-                        <option value="1">רבעים (תו 1 לפעימה)</option>
-                        <option value="2">שמיניות (2 תווים לפעימה)</option>
-                    </select>
-                </div>
+            <!-- מד גובה צליל ויזואלי (Pitch Height Bar) -->
+            <div class="w-6 h-28 rounded-full bg-black/40 border border-white/10 p-1 flex flex-col justify-end" title="גובה הצליל במנעד הסולם">
+              <div
+                id="pitchHeightFill"
+                class="w-full rounded-full bg-gradient-to-t from-emerald-500 via-amber-400 to-rose-500 transition-all duration-150"
+                style="height: 10%"
+              ></div>
             </div>
-        </section>
+          </div>
 
-        <!-- 4. אילוסטרציה חיה של התו המתנגן + חמשת התווים -->
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-
-            <!-- כרטיס אילוסטרציה חיה בזמן אמת (4 עמודות) -->
-            <div class="card p-4 md:p-5 lg:col-span-4 flex flex-col justify-between relative overflow-hidden">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-sm md:text-base font-extrabold flex items-center gap-2 text-amber-400">
-                        <span>✨</span> תו מתנגן בזמן אמת
-                    </h2>
-                    <span id="liveDirectionBadge" class="text-xs font-bold px-2.5 py-1 rounded-full inset-box">
-                        מוכן לנגינה
-                    </span>
-                </div>
-
-                <!-- תצוגת סולפג' מרכזית מוגדלת עם מד גובה צליל -->
-                <div id="liveIllustrationBox" class="my-3 p-4 rounded-2xl inset-box flex items-center justify-between gap-3">
-                    <div class="flex-1 text-center">
-                        <div class="text-xs font-semibold" style="color: var(--text-secondary);">שם התו (סולפג')</div>
-                        <div id="liveNoteName" class="text-4xl md:text-5xl font-black text-amber-400 my-1 tracking-wide">—</div>
-                        <div id="liveStatusSubtext" class="text-xs font-bold text-emerald-400">בחר סולם ולחץ נגן</div>
-                    </div>
-
-                    <!-- מד גובה צליל ויזואלי (Pitch Height Bar) -->
-                    <div class="w-6 h-28 rounded-full bg-black/40 border border-white/10 p-1 flex flex-col justify-end" title="גובה הצליל במנעד הסולם">
-                        <div id="pitchHeightFill" class="w-full rounded-full bg-gradient-to-t from-emerald-500 via-amber-400 to-rose-500 transition-all duration-150" style="height: 10%;"></div>
-                    </div>
-                </div>
-
-                <!-- פרטי ביצוע לכינור: מיתר ואצבע -->
-                <div class="grid grid-cols-2 gap-2.5 text-center">
-                    <div class="p-2.5 rounded-xl inset-box">
-                        <div class="text-[11px]" style="color: var(--text-secondary);">מיתר בכינור</div>
-                        <div id="liveStringName" class="text-base md:text-lg font-extrabold text-amber-300 mt-0.5">—</div>
-                    </div>
-                    <div class="p-2.5 rounded-xl inset-box">
-                        <div class="text-[11px]" style="color: var(--text-secondary);">מיקום אצבע</div>
-                        <div id="liveFingerNum" class="text-base md:text-lg font-extrabold text-emerald-400 mt-0.5">—</div>
-                    </div>
-                </div>
+          <!-- פרטי ביצוע לכינור: מיתר ואצבע -->
+          <div class="grid grid-cols-2 gap-2.5 text-center">
+            <div class="p-2.5 rounded-xl inset-box">
+              <div class="text-[11px]" style="color: var(--text-secondary)">מיתר בכינור</div>
+              <div id="liveStringName" class="text-base md:text-lg font-extrabold text-amber-300 mt-0.5">—</div>
             </div>
-
-            <!-- חמשת תווים אינטראקטיבית (8 עמודות) -->
-            <div class="card p-4 md:p-5 lg:col-span-8 flex flex-col justify-between">
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                    <h2 class="text-base md:text-lg font-extrabold flex items-center gap-2">
-                        <span>🎶</span> חמשת תווים (מפתח סול + סולפג' מתחת לכל תו)
-                    </h2>
-                    <span class="text-xs" style="color: var(--text-secondary);">
-                        התו המתנגן מודגש באדום בזמן אמת
-                    </span>
-                </div>
-                <div class="sheet-music-wrapper flex-1 flex items-center">
-                    <div id="sheetMusicRender" class="w-full"></div>
-                </div>
+            <div class="p-2.5 rounded-xl inset-box">
+              <div class="text-[11px]" style="color: var(--text-secondary)">מיקום אצבע</div>
+              <div id="liveFingerNum" class="text-base md:text-lg font-extrabold text-emerald-400 mt-0.5">—</div>
             </div>
-        </section>
+          </div>
+        </div>
 
-        <!-- 5. שחיף כינור ויזואלי אינטראקטיבי -->
-        <section class="card p-4 md:p-5">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
-                <div>
-                    <h2 class="text-base md:text-lg font-extrabold flex items-center gap-2">
-                        <span>🎯</span> מפת אצבוע על שחיף הכינור (פוזיציה ראשונה)
-                    </h2>
-                    <p class="text-xs" style="color: var(--text-secondary);">
-                        לחץ על כל עיגול על השחיף כדי לשמוע את הצליל המדויק שלו ולכוון את האצבע על הכינור.
-                    </p>
-                </div>
-                <!-- מקרא צבעים -->
-                <div class="flex flex-wrap items-center gap-3 text-xs font-bold">
-                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> מיתר פתוח (0)</span>
-                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-sky-500 inline-block"></span> תו בסולם (1-4)</span>
-                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> שינוי עלייה/ירידה</span>
-                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-600 inline-block"></span> תו מנוגן כעת</span>
-                </div>
-            </div>
+        <!-- חמשת תווים אינטראקטיבית (8 עמודות) -->
+        <div class="card p-4 md:p-5 lg:col-span-8 flex flex-col justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+            <h2 class="text-base md:text-lg font-extrabold flex items-center gap-2"><span>🎶</span> חמשת תווים (מפתח סול + סולפג' מתחת לכל תו)</h2>
+            <span class="text-xs" style="color: var(--text-secondary)"> התו המתנגן מודגש באדום בזמן אמת </span>
+          </div>
+          <div class="sheet-music-wrapper flex-1 flex items-center">
+            <div id="sheetMusicRender" class="w-full"></div>
+          </div>
+        </div>
+      </section>
 
-            <div class="fingerboard-container w-full overflow-x-auto pb-1">
-                <svg id="violinFingerboard" viewBox="0 0 920 265" class="w-full min-w-[680px] h-auto rounded-xl border"
-                     style="background-color: #18120e; border-color: var(--border-color);"></svg>
-            </div>
-        </section>
+      <!-- 5. שחיף כינור ויזואלי אינטראקטיבי -->
+      <section class="card p-4 md:p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+          <div>
+            <h2 class="text-base md:text-lg font-extrabold flex items-center gap-2"><span>🎯</span> מפת אצבוע על שחיף הכינור (פוזיציה ראשונה)</h2>
+            <p class="text-xs" style="color: var(--text-secondary)">
+              לחץ על כל עיגול על השחיף כדי לשמוע את הצליל המדויק שלו ולכוון את האצבע על הכינור.
+            </p>
+          </div>
+          <!-- מקרא צבעים -->
+          <div class="flex flex-wrap items-center gap-3 text-xs font-bold">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> מיתר פתוח (0)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-sky-500 inline-block"></span> תו בסולם (1-4)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> שינוי עלייה/ירידה</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-rose-600 inline-block"></span> תו מנוגן כעת</span>
+          </div>
+        </div>
 
-        <!-- 6. בדיקת שמיעה בסולפג' -->
-        <section class="card p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="md:w-1/3">
-                <h3 class="text-base font-extrabold flex items-center gap-2 text-amber-400">
-                    <span>👂</span> תרגול שמיעה וזיהוי תווים
-                </h3>
-                <p class="text-xs mt-1" style="color: var(--text-secondary);">
-                    האזן לצליל אקראי מתוך הסולם הנבחר, זהה את שמו בסולפג' או מצא אותו על הכינור.
-                </p>
-            </div>
+        <div class="fingerboard-container w-full overflow-x-auto pb-1">
+          <svg
+            id="violinFingerboard"
+            viewBox="0 0 920 265"
+            class="w-full min-w-[680px] h-auto rounded-xl border"
+            style="background-color: #18120e; border-color: var(--border-color)"
+          ></svg>
+        </div>
+      </section>
 
-            <div class="flex flex-wrap items-center gap-2">
-                <button id="earPlayBtn" class="py-2.5 px-4 rounded-xl font-extrabold text-xs md:text-sm bg-amber-600 hover:bg-amber-500 text-white transition shadow">
-                    🔊 השמע תו אקראי
-                </button>
-                <button id="earRepeatBtn" disabled class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm border disabled:opacity-40 transition inset-box" title="השמע שוב">
-                    🔁 שוב
-                </button>
-            </div>
+      <!-- 6. בדיקת שמיעה בסולפג' -->
+      <section class="card p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="md:w-1/3">
+          <h3 class="text-base font-extrabold flex items-center gap-2 text-amber-400"><span>👂</span> תרגול שמיעה וזיהוי תווים</h3>
+          <p class="text-xs mt-1" style="color: var(--text-secondary)">
+            האזן לצליל אקראי מתוך הסולם הנבחר, זהה את שמו בסולפג' או מצא אותו על הכינור.
+          </p>
+        </div>
 
-            <div class="flex-1 flex flex-col items-start md:items-end gap-1.5 w-full">
-                <div id="earOptions" class="flex flex-wrap gap-1.5">
-                    <span class="text-xs italic" style="color: var(--text-secondary);">לחץ על "השמע תו אקראי" להתחלה...</span>
-                </div>
-                <div id="earFeedback" class="text-xs font-bold min-h-[18px]"></div>
-            </div>
-        </section>
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            id="earPlayBtn"
+            class="py-2.5 px-4 rounded-xl font-extrabold text-xs md:text-sm bg-amber-600 hover:bg-amber-500 text-white transition shadow"
+          >
+            🔊 השמע תו אקראי
+          </button>
+          <button
+            id="earRepeatBtn"
+            disabled
+            class="py-2.5 px-3 rounded-xl font-bold text-xs md:text-sm border disabled:opacity-40 transition inset-box"
+            title="השמע שוב"
+          >
+            🔁 שוב
+          </button>
+        </div>
 
+        <div class="flex-1 flex flex-col items-start md:items-end gap-1.5 w-full">
+          <div id="earOptions" class="flex flex-wrap gap-1.5">
+            <span class="text-xs italic" style="color: var(--text-secondary)">לחץ על "השמע תו אקראי" להתחלה...</span>
+          </div>
+          <div id="earFeedback" class="text-xs font-bold min-h-[18px]"></div>
+        </div>
+      </section>
     </div>
 
     <script>
-        /**
-         * ============================================================================
-         * 1. מנוע סאונד ומטרונום מדויק (Web Audio API)
-         * ============================================================================
-         */
-        class ViolinStudioAudio {
-            constructor() {
-                this.ctx = null;
-                this.a4Freq = 440; // לה = 440Hz או 442Hz
-                this.droneNodes = null;
-                this.droneType = 'off'; // 'off' | 'sol' | 're'
-            }
-
-            init() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AudioContext();
-                }
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-            }
-
-            midiToFreq(midi) {
-                return this.a4Freq * Math.pow(2, (midi - 69) / 12);
-            }
-
-            // הפקת צליל כינור חם ועשיר
-            playViolinNote(midi, durationSec = 0.6, startTimeOffset = 0) {
-                this.init();
-                const now = this.ctx.currentTime + startTimeOffset;
-                const freq = this.midiToFreq(midi);
-
-                const master = this.ctx.createGain();
-                const lowpass = this.ctx.createBiquadFilter();
-                lowpass.type = 'lowpass';
-                lowpass.frequency.setValueAtTime(2600, now);
-                lowpass.frequency.exponentialRampToValueAtTime(1450, now + durationSec);
-
-                master.gain.setValueAtTime(0.001, now);
-                master.gain.linearRampToValueAtTime(0.20, now + 0.085);
-                master.gain.setValueAtTime(0.16, now + Math.max(0.12, durationSec - 0.11));
-                master.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
-
-                // Harmonic-rich bowed-string timbre: fundamentals plus bowed-string overtones.
-                const partials = [1, 2, 3, 4, 5, 6];
-                const gains = [0.60, 0.34, 0.22, 0.14, 0.09, 0.055];
-                const oscillators = [];
-                partials.forEach((partial, i) => {
-                    const osc = this.ctx.createOscillator();
-                    const partialGain = this.ctx.createGain();
-                    osc.type = i < 2 ? 'sawtooth' : 'triangle';
-                    osc.frequency.setValueAtTime(freq * partial, now);
-                    partialGain.gain.setValueAtTime(gains[i], now);
-                    osc.detune.setValueAtTime(i % 2 === 0 ? 2 : -2, now);
-                    osc.connect(partialGain);
-                    partialGain.connect(lowpass);
-                    oscillators.push(osc);
-                });
-
-                // Natural bow attack and slight string vibrato.
-                const noiseBuffer = this.ctx.createBuffer(1, Math.ceil(this.ctx.sampleRate * 0.12), this.ctx.sampleRate);
-                const noiseData = noiseBuffer.getChannelData(0);
-                for (let i = 0; i < noiseData.length; i++) {
-                    noiseData[i] = (Math.random() * 2 - 1) * (1 - i / noiseData.length);
-                }
-                const noise = this.ctx.createBufferSource();
-                const noiseFilter = this.ctx.createBiquadFilter();
-                const noiseGain = this.ctx.createGain();
-                noise.buffer = noiseBuffer;
-                noiseFilter.type = 'bandpass';
-                noiseFilter.frequency.value = 1800;
-                noiseFilter.Q.value = 0.7;
-                noiseGain.gain.setValueAtTime(0.055, now);
-                noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
-                noise.connect(noiseFilter);
-                noiseFilter.connect(noiseGain);
-                noiseGain.connect(master);
-
-                const vibrato = this.ctx.createOscillator();
-                const vibratoGain = this.ctx.createGain();
-                vibrato.frequency.value = 5.2;
-                vibratoGain.gain.setValueAtTime(0.001, now);
-                vibratoGain.gain.linearRampToValueAtTime(5.5, now + 0.12);
-                vibrato.connect(vibratoGain);
-                oscillators.forEach(osc => vibratoGain.connect(osc.detune));
-
-                lowpass.connect(master);
-                master.connect(this.ctx.destination);
-
-                oscillators.forEach(osc => { osc.start(now); osc.stop(now + durationSec + 0.03); });
-                noise.start(now); noise.stop(now + 0.12);
-                vibrato.start(now); vibrato.stop(now + durationSec + 0.03);
-            }
-
-            // נקישת מטרונום חדה (פעמה 1 מודגשת גבוהה, פעמות 2-4 רכות יותר, שמיניות עדינות)
-            playMetronomeClick(beatType = 'regular') {
-                this.init();
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-
-                let freq = 880;
-                let peakGain = 0.22;
-                if (beatType === 'accent') {
-                    freq = 1320;
-                    peakGain = 0.34;
-                } else if (beatType === 'sub') {
-                    freq = 660;
-                    peakGain = 0.11;
-                }
-
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, now);
-                osc.frequency.exponentialRampToValueAtTime(freq * 0.5, now + 0.045);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(peakGain, now + 0.004);
-                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
-
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.06);
-            }
-
-            // ניהול צליל עוגן מתמשך (Drone) על סול נמוך (MIDI 55) או רה (MIDI 62)
-            setDrone(type) {
-                this.init();
-                this.stopDrone();
-                this.droneType = type;
-                if (type === 'off') return;
-
-                const midi = (type === 'sol') ? 55 : 62;
-                const now = this.ctx.currentTime;
-                const freq = this.midiToFreq(midi);
-
-                const osc1 = this.ctx.createOscillator();
-                const osc2 = this.ctx.createOscillator();
-                const filter = this.ctx.createBiquadFilter();
-                const gain = this.ctx.createGain();
-
-                osc1.type = 'triangle';
-                osc1.frequency.setValueAtTime(freq, now);
-
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(freq * 2, now);
-
-                filter.type = 'lowpass';
-                filter.frequency.setValueAtTime(620, now);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(0.11, now + 0.4);
-
-                osc1.connect(filter);
-                osc2.connect(filter);
-                filter.connect(gain);
-                gain.connect(this.ctx.destination);
-
-                osc1.start(now);
-                osc2.start(now);
-
-                this.droneNodes = { osc1, osc2, gain, midi };
-            }
-
-            stopDrone() {
-                if (this.droneNodes && this.ctx) {
-                    const oldNodes = this.droneNodes;
-                    const now = this.ctx.currentTime;
-                    oldNodes.gain.gain.linearRampToValueAtTime(0.0001, now + 0.2);
-                    setTimeout(() => {
-                        try {
-                            oldNodes.osc1.stop();
-                            oldNodes.osc2.stop();
-                        } catch (e) {}
-                    }, 240);
-                    this.droneNodes = null;
-                }
-            }
-
-            updateDronePitch() {
-                if (this.droneNodes && this.ctx) {
-                    const freq = this.midiToFreq(this.droneNodes.midi);
-                    this.droneNodes.osc1.frequency.setValueAtTime(freq, this.ctx.currentTime);
-                    this.droneNodes.osc2.frequency.setValueAtTime(freq * 2, this.ctx.currentTime);
-                }
-            }
+      /**
+       * ============================================================================
+       * 1. מנוע סאונד ומטרונום מדויק (Web Audio API)
+       * ============================================================================
+       */
+      class ViolinStudioAudio {
+        constructor() {
+          this.ctx = null;
+          this.a4Freq = 440; // לה = 440Hz או 442Hz
+          this.droneNodes = null;
+          this.droneType = "off"; // 'off' | 'sol' | 're'
+          this.sampleCache = new Map();
+          this.samplePaths = {
+            55: "G3.mp3",
+            57: "A3.mp3",
+            58: "A3.mp3",
+            59: "B3.mp3",
+            60: "C4.mp3",
+            62: "D4.mp3",
+            63: "D4.mp3",
+            64: "E4.mp3",
+            65: "F4.mp3",
+            66: "F4.mp3",
+            67: "G4.mp3",
+            69: "A4.mp3",
+            70: "A4.mp3",
+            71: "B5.mp3",
+            72: "C5.mp3",
+            74: "D5.mp3",
+            76: "E5.mp3",
+            77: "F5.mp3",
+            78: "F5.mp3",
+            79: "G5.mp3",
+          };
         }
 
-        const audioEngine = new ViolinStudioAudio();
+        init() {
+          if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContext();
+          }
+          if (this.ctx.state === "suspended") {
+            this.ctx.resume();
+          }
+        }
 
-        /**
-         * ============================================================================
-         * 2. מאגר תווי הכינור והסולמות בסולפג' קבוע (ללא אותיות לטיניות בממשק)
-         * ============================================================================
-         */
-        const FINGERBOARD_POSITIONS = [
-            // מיתר סול (אינדקס 0)
-            { id: 'SOL0', stringIdx: 0, stringName: 'מיתר סול', finger: '0 (פתוח)', semitone: 0, midi: 55, solfege: 'סול', abc: 'G,' },
-            { id: 'SOL1', stringIdx: 0, stringName: 'מיתר סול', finger: 'אצבע 1', semitone: 2, midi: 57, solfege: 'לה', abc: 'A,' },
-            { id: 'SOL2L', stringIdx: 0, stringName: 'מיתר סול', finger: 'אצבע 2 נמוכה', semitone: 3, midi: 58, solfege: 'סי♭', abc: '_B,' },
-            { id: 'SOL2H', stringIdx: 0, stringName: 'מיתר סול', finger: 'אצבע 2', semitone: 4, midi: 59, solfege: 'סי', abc: 'B,' },
-            { id: 'SOL3', stringIdx: 0, stringName: 'מיתר סול', finger: 'אצבע 3', semitone: 5, midi: 60, solfege: 'דו', abc: 'C' },
+        midiToFreq(midi) {
+          return this.a4Freq * Math.pow(2, (midi - 69) / 12);
+        }
 
-            // מיתר רה (אינדקס 1)
-            { id: 'RE0', stringIdx: 1, stringName: 'מיתר רה', finger: '0 (פתוח)', semitone: 0, midi: 62, solfege: 'רה', abc: 'D' },
-            { id: 'RE1L', stringIdx: 1, stringName: 'מיתר רה', finger: 'אצבע 1 נמוכה', semitone: 1, midi: 63, solfege: 'מי♭', abc: '_E' },
-            { id: 'RE1H', stringIdx: 1, stringName: 'מיתר רה', finger: 'אצבע 1', semitone: 2, midi: 64, solfege: 'מי', abc: 'E' },
-            { id: 'RE2L', stringIdx: 1, stringName: 'מיתר רה', finger: 'אצבע 2 נמוכה', semitone: 3, midi: 65, solfege: 'פה', abc: 'F' },
-            { id: 'RE2H', stringIdx: 1, stringName: 'מיתר רה', finger: 'אצבע 2', semitone: 4, midi: 66, solfege: 'פה♯', abc: '^F' },
-            { id: 'RE3', stringIdx: 1, stringName: 'מיתר רה', finger: 'אצבע 3', semitone: 5, midi: 67, solfege: 'סול', abc: 'G' },
+        // Play a real bowed-violin recording. Near pitches are transposed by a small playback-rate adjustment.
+        async playViolinNote(midi, durationSec = 0.6, startTimeOffset = 0) {
+          this.init();
+          const now = this.ctx.currentTime + startTimeOffset;
+          let targetMidi = midi;
 
-            // מיתר לה (אינדקס 2)
-            { id: 'LA0', stringIdx: 2, stringName: 'מיתר לה', finger: '0 (פתוח)', semitone: 0, midi: 69, solfege: 'לה', abc: 'A' },
-            { id: 'LA1L', stringIdx: 2, stringName: 'מיתר לה', finger: 'אצבע 1 נמוכה', semitone: 1, midi: 70, solfege: 'סי♭', abc: '_B' },
-            { id: 'LA1H', stringIdx: 2, stringName: 'מיתר לה', finger: 'אצבע 1', semitone: 2, midi: 71, solfege: 'סי', abc: 'B' },
-            { id: 'LA2L', stringIdx: 2, stringName: 'מיתר לה', finger: 'אצבע 2 נמוכה', semitone: 3, midi: 72, solfege: 'דו', abc: 'c' },
-            { id: 'LA3', stringIdx: 2, stringName: 'מיתר לה', finger: 'אצבע 3', semitone: 5, midi: 74, solfege: 'רה', abc: 'd' },
+          const available = Object.keys(this.samplePaths).map(Number);
+          let sourceMidi = available.reduce((best, candidate) => (Math.abs(candidate - targetMidi) < Math.abs(best - targetMidi) ? candidate : best));
 
-            // מיתר מי (אינדקס 3)
-            { id: 'MI0', stringIdx: 3, stringName: 'מיתר מי', finger: '0 (פתוח)', semitone: 0, midi: 76, solfege: 'מי', abc: 'e' },
-            { id: 'MI1L', stringIdx: 3, stringName: 'מיתר מי', finger: 'אצבע 1 נמוכה', semitone: 1, midi: 77, solfege: 'פה', abc: 'f' },
-            { id: 'MI1H', stringIdx: 3, stringName: 'מיתר מי', finger: 'אצבע 1', semitone: 2, midi: 78, solfege: 'פה♯', abc: '^f' },
-            { id: 'MI2L', stringIdx: 3, stringName: 'מיתר מי', finger: 'אצבע 2 נמוכה', semitone: 3, midi: 79, solfege: 'סול', abc: 'g' }
-        ];
+          const fileName = this.samplePaths[sourceMidi];
+          if (!fileName) return;
 
-        const POS_MAP = {};
-        FINGERBOARD_POSITIONS.forEach(p => POS_MAP[p.id] = p);
-
-        const EXERCISES = {
-            g_major: {
-                id: 'g_major',
-                title: 'סול מז\'ור',
-                badge: 'סימן מפתח: פה♯',
-                description: 'סולם סול מז\'ור (2 אוקטבות): צליל פתוח ויציב. על מיתרי סול ורה אצבעות 2 ו-3 צמודות; על מיתרי לה ומי אצבעות 1 ו-2 צמודות.',
-                up: ['SOL0', 'SOL1', 'SOL2H', 'SOL3', 'RE0', 'RE1H', 'RE2H', 'RE3', 'LA0', 'LA1H', 'LA2L', 'LA3', 'MI0', 'MI1H', 'MI2L'],
-                down: ['MI2L', 'MI1H', 'MI0', 'LA3', 'LA2L', 'LA1H', 'LA0', 'RE3', 'RE2H', 'RE1H', 'RE0', 'SOL3', 'SOL2H', 'SOL1', 'SOL0'],
-                customLabelsUp: {},
-                customLabelsDown: {}
-            },
-            g_natural_minor: {
-                id: 'g_natural_minor',
-                title: 'סול מינור טבעי',
-                badge: 'סימני מפתח: סי♭, מי♭',
-                description: 'סולם סול מינור טבעי: הדרגות 3 (סי♭), 6 (מי♭) ו-7 (פה) מונמכות. אצבע 1 נמוכה על מיתרי רה ולה, ואצבע 2 נמוכה צמודה ל-1 על מיתר סול.',
-                up: ['SOL0', 'SOL1', 'SOL2L', 'SOL3', 'RE0', 'RE1L', 'RE2L', 'RE3', 'LA0', 'LA1L', 'LA2L', 'LA3', 'MI0', 'MI1L', 'MI2L'],
-                down: ['MI2L', 'MI1L', 'MI0', 'LA3', 'LA2L', 'LA1L', 'LA0', 'RE3', 'RE2L', 'RE1L', 'RE0', 'SOL3', 'SOL2L', 'SOL1', 'SOL0'],
-                customLabelsUp: {},
-                customLabelsDown: {}
-            },
-            g_harmonic_minor: {
-                id: 'g_harmonic_minor',
-                title: 'סול מינור הרמוני',
-                badge: 'סי♭, מי♭ + פה♯ מוגבה',
-                description: 'סולם סול מינור הרמוני: הדרגה השביעית מוגבהת ל-פה♯ ליצירת מתח המוביל לסול. נוצרת מתיחה של טון וחצי בין מי♭ (אצבע 1 נמוכה) ל-פה♯ (אצבע 2 גבוהה).',
-                up: ['SOL0', 'SOL1', 'SOL2L', 'SOL3', 'RE0', 'RE1L', 'RE2H', 'RE3', 'LA0', 'LA1L', 'LA2L', 'LA3', 'MI0', 'MI1H', 'MI2L'],
-                down: ['MI2L', 'MI1H', 'MI0', 'LA3', 'LA2L', 'LA1L', 'LA0', 'RE3', 'RE2H', 'RE1L', 'RE0', 'SOL3', 'SOL2L', 'SOL1', 'SOL0'],
-                customLabelsUp: {},
-                customLabelsDown: {}
-            },
-            g_melodic_minor: {
-                id: 'g_melodic_minor',
-                title: 'סול מינור מלודי',
-                badge: 'עלייה: מי♮, פה♯ | ירידה: פה♮, מי♭',
-                description: 'סולם סול מינור מלודי: בעלייה מגביהים את הדרגה ה-6 (מי בקר) וה-7 (פה♯) למלודיה זורמת, ובירידה מחזירים אותן למצב הטבעי (פה בקר ו-מי♭).',
-                up: ['SOL0', 'SOL1', 'SOL2L', 'SOL3', 'RE0', 'RE1H', 'RE2H', 'RE3', 'LA0', 'LA1L', 'LA2L', 'LA3', 'MI0', 'MI1H', 'MI2L'],
-                down: ['MI2L', 'MI1L', 'MI0', 'LA3', 'LA2L', 'LA1L', 'LA0', 'RE3', 'RE2L', 'RE1L', 'RE0', 'SOL3', 'SOL2L', 'SOL1', 'SOL0'],
-                customLabelsUp: { 'RE1H': 'מי♮', 'MI0': 'מי♮' },
-                customLabelsDown: { 'MI1L': 'פה♮', 'RE2L': 'פה♮' }
-            },
-            g_major_arp: {
-                id: 'g_major_arp',
-                title: 'ארפג\'יו סול מז\'ור',
-                badge: 'דרגות 1 - 3 - 5 (סול, סי, רה)',
-                description: 'ארפג\'יו סול מז\'ור ב-2 אוקטבות: מנגן את צלילי האקורד המשולש (סול - סי - רה). מצוין לאימון על דיוק באינטונציה ומעבר חלק בין מיתרים.',
-                up: ['SOL0', 'SOL2H', 'RE0', 'RE3', 'LA1H', 'LA3', 'MI2L'],
-                down: ['MI2L', 'LA3', 'LA1H', 'RE3', 'RE0', 'SOL2H', 'SOL0'],
-                customLabelsUp: {},
-                customLabelsDown: {}
-            },
-            g_minor_arp: {
-                id: 'g_minor_arp',
-                title: 'ארפג\'יו סול מינור',
-                badge: 'דרגות 1 - 3♭ - 5 (סול, סי♭, רה)',
-                description: 'ארפג\'יו סול מינור ב-2 אוקטבות: מבוסס על טרצה קטנה (סי♭ במקום סי). שים לב לאצבע 2 הנמוכה על מיתר סול ולאצבע 1 הנמוכה על מיתר לה.',
-                up: ['SOL0', 'SOL2L', 'RE0', 'RE3', 'LA1L', 'LA3', 'MI2L'],
-                down: ['MI2L', 'LA3', 'LA1L', 'RE3', 'RE0', 'SOL2L', 'SOL0'],
-                customLabelsUp: {},
-                customLabelsDown: {}
+          try {
+            let buffer = this.sampleCache.get(fileName);
+            if (!buffer) {
+              const response = await fetch(`../audio/violin-samples/${fileName}`);
+              if (!response.ok) throw new Error(`Violin sample unavailable: ${fileName}`);
+              const data = await response.arrayBuffer();
+              buffer = await this.ctx.decodeAudioData(data);
+              this.sampleCache.set(fileName, buffer);
             }
+
+            const source = this.ctx.createBufferSource();
+            const gain = this.ctx.createGain();
+            const filter = this.ctx.createBiquadFilter();
+            source.buffer = buffer;
+            source.playbackRate.setValueAtTime(Math.pow(2, (targetMidi - sourceMidi) / 12), now);
+            filter.type = "lowpass";
+            filter.frequency.value = 9000;
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.72, now + 0.025);
+            gain.gain.setValueAtTime(0.62, now + Math.max(0.07, durationSec - 0.08));
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+            source.connect(filter);
+            filter.connect(gain);
+            gain.connect(this.ctx.destination);
+            source.start(now, 0, durationSec);
+            source.stop(now + durationSec + 0.03);
+          } catch (error) {
+            console.warn(error);
+          }
+        }
+
+        // נקישת מטרונום חדה (פעמה 1 מודגשת גבוהה, פעמות 2-4 רכות יותר, שמיניות עדינות)
+        playMetronomeClick(beatType = "regular") {
+          this.init();
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          let freq = 880;
+          let peakGain = 0.22;
+          if (beatType === "accent") {
+            freq = 1320;
+            peakGain = 0.34;
+          } else if (beatType === "sub") {
+            freq = 660;
+            peakGain = 0.11;
+          }
+
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, now);
+          osc.frequency.exponentialRampToValueAtTime(freq * 0.5, now + 0.045);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(peakGain, now + 0.004);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.06);
+        }
+
+        // ניהול צליל עוגן מתמשך (Drone) על סול נמוך (MIDI 55) או רה (MIDI 62)
+        setDrone(type) {
+          this.init();
+          this.stopDrone();
+          this.droneType = type;
+          if (type === "off") return;
+
+          const midi = type === "sol" ? 55 : 62;
+          const now = this.ctx.currentTime;
+          const freq = this.midiToFreq(midi);
+
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
+
+          osc1.type = "triangle";
+          osc1.frequency.setValueAtTime(freq, now);
+
+          osc2.type = "sine";
+          osc2.frequency.setValueAtTime(freq * 2, now);
+
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(620, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.11, now + 0.4);
+
+          osc1.connect(filter);
+          osc2.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc1.start(now);
+          osc2.start(now);
+
+          this.droneNodes = { osc1, osc2, gain, midi };
+        }
+
+        stopDrone() {
+          if (this.droneNodes && this.ctx) {
+            const oldNodes = this.droneNodes;
+            const now = this.ctx.currentTime;
+            oldNodes.gain.gain.linearRampToValueAtTime(0.0001, now + 0.2);
+            setTimeout(() => {
+              try {
+                oldNodes.osc1.stop();
+                oldNodes.osc2.stop();
+              } catch (e) {}
+            }, 240);
+            this.droneNodes = null;
+          }
+        }
+
+        updateDronePitch() {
+          if (this.droneNodes && this.ctx) {
+            const freq = this.midiToFreq(this.droneNodes.midi);
+            this.droneNodes.osc1.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            this.droneNodes.osc2.frequency.setValueAtTime(freq * 2, this.ctx.currentTime);
+          }
+        }
+      }
+
+      const audioEngine = new ViolinStudioAudio();
+
+      /**
+       * ============================================================================
+       * 2. מאגר תווי הכינור והסולמות בסולפג' קבוע (ללא אותיות לטיניות בממשק)
+       * ============================================================================
+       */
+      const FINGERBOARD_POSITIONS = [
+        // מיתר סול (אינדקס 0)
+        { id: "SOL0", stringIdx: 0, stringName: "מיתר סול", finger: "0 (פתוח)", semitone: 0, midi: 55, solfege: "סול", abc: "G," },
+        { id: "SOL1", stringIdx: 0, stringName: "מיתר סול", finger: "אצבע 1", semitone: 2, midi: 57, solfege: "לה", abc: "A," },
+        { id: "SOL2L", stringIdx: 0, stringName: "מיתר סול", finger: "אצבע 2 נמוכה", semitone: 3, midi: 58, solfege: "סי♭", abc: "_B," },
+        { id: "SOL2H", stringIdx: 0, stringName: "מיתר סול", finger: "אצבע 2", semitone: 4, midi: 59, solfege: "סי", abc: "B," },
+        { id: "SOL3", stringIdx: 0, stringName: "מיתר סול", finger: "אצבע 3", semitone: 5, midi: 60, solfege: "דו", abc: "C" },
+
+        // מיתר רה (אינדקס 1)
+        { id: "RE0", stringIdx: 1, stringName: "מיתר רה", finger: "0 (פתוח)", semitone: 0, midi: 62, solfege: "רה", abc: "D" },
+        { id: "RE1L", stringIdx: 1, stringName: "מיתר רה", finger: "אצבע 1 נמוכה", semitone: 1, midi: 63, solfege: "מי♭", abc: "_E" },
+        { id: "RE1H", stringIdx: 1, stringName: "מיתר רה", finger: "אצבע 1", semitone: 2, midi: 64, solfege: "מי", abc: "E" },
+        { id: "RE2L", stringIdx: 1, stringName: "מיתר רה", finger: "אצבע 2 נמוכה", semitone: 3, midi: 65, solfege: "פה", abc: "F" },
+        { id: "RE2H", stringIdx: 1, stringName: "מיתר רה", finger: "אצבע 2", semitone: 4, midi: 66, solfege: "פה♯", abc: "^F" },
+        { id: "RE3", stringIdx: 1, stringName: "מיתר רה", finger: "אצבע 3", semitone: 5, midi: 67, solfege: "סול", abc: "G" },
+
+        // מיתר לה (אינדקס 2)
+        { id: "LA0", stringIdx: 2, stringName: "מיתר לה", finger: "0 (פתוח)", semitone: 0, midi: 69, solfege: "לה", abc: "A" },
+        { id: "LA1L", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 1 נמוכה", semitone: 1, midi: 70, solfege: "סי♭", abc: "_B" },
+        { id: "LA1H", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 1", semitone: 2, midi: 71, solfege: "סי", abc: "B" },
+        { id: "LA2L", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 2 נמוכה", semitone: 3, midi: 72, solfege: "דו", abc: "c" },
+        { id: "LA3", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 3", semitone: 5, midi: 74, solfege: "רה", abc: "d" },
+
+        // מיתר מי (אינדקס 3)
+        { id: "MI0", stringIdx: 3, stringName: "מיתר מי", finger: "0 (פתוח)", semitone: 0, midi: 76, solfege: "מי", abc: "e" },
+        { id: "MI1L", stringIdx: 3, stringName: "מיתר מי", finger: "אצבע 1 נמוכה", semitone: 1, midi: 77, solfege: "פה", abc: "f" },
+        { id: "MI1H", stringIdx: 3, stringName: "מיתר מי", finger: "אצבע 1", semitone: 2, midi: 78, solfege: "פה♯", abc: "^f" },
+        { id: "MI2L", stringIdx: 3, stringName: "מיתר מי", finger: "אצבע 2 נמוכה", semitone: 3, midi: 79, solfege: "סול", abc: "g" },
+      ];
+
+      const POS_MAP = {};
+      FINGERBOARD_POSITIONS.forEach((p) => (POS_MAP[p.id] = p));
+
+      const NOTE_NAMES = {
+        he: {
+          סול: "סול",
+          לה: "לה",
+          "סי♭": "סי♭",
+          סי: "סי",
+          דו: "דו",
+          רה: "רה",
+          "מי♭": "מי♭",
+          מי: "מי",
+          פה: "פה",
+          "פה♯": "פה♯",
+          "פה♮": "פה♮",
+          "מי♮": "מי♮",
+          "מי♭": "מי♭",
+        },
+        en: {
+          סול: "G",
+          לה: "A",
+          "סי♭": "B♭",
+          סי: "B",
+          דו: "C",
+          רה: "D",
+          "מי♭": "E♭",
+          מי: "E",
+          פה: "F",
+          "פה♯": "F♯",
+          "פה♮": "F♮",
+          "מי♮": "E♮",
+        },
+        ru: {
+          סול: "Соль",
+          לה: "Ля",
+          "סי♭": "Си♭",
+          סי: "Си",
+          דו: "До",
+          רה: "Ре",
+          "מי♭": "Ми♭",
+          מי: "Ми",
+          פה: "Фа",
+          "פה♯": "Фа♯",
+          "פה♮": "Фа♮",
+          "מי♮": "Ми♮",
+        },
+      };
+
+      let currentLanguage = "he";
+
+      function localizeNoteName(name) {
+        return NOTE_NAMES[currentLanguage]?.[name] || name;
+      }
+
+      const EXERCISES = {
+        g_major: {
+          id: "g_major",
+          title: "סול מז'ור",
+          badge: "סימן מפתח: פה♯",
+          description: "סולם סול מז'ור (2 אוקטבות): צליל פתוח ויציב. על מיתרי סול ורה אצבעות 2 ו-3 צמודות; על מיתרי לה ומי אצבעות 1 ו-2 צמודות.",
+          up: ["SOL0", "SOL1", "SOL2H", "SOL3", "RE0", "RE1H", "RE2H", "RE3", "LA0", "LA1H", "LA2L", "LA3", "MI0", "MI1H", "MI2L"],
+          down: ["MI2L", "MI1H", "MI0", "LA3", "LA2L", "LA1H", "LA0", "RE3", "RE2H", "RE1H", "RE0", "SOL3", "SOL2H", "SOL1", "SOL0"],
+          customLabelsUp: {},
+          customLabelsDown: {},
+        },
+        g_natural_minor: {
+          id: "g_natural_minor",
+          title: "סול מינור טבעי",
+          badge: "סימני מפתח: סי♭, מי♭",
+          description:
+            "סולם סול מינור טבעי: הדרגות 3 (סי♭), 6 (מי♭) ו-7 (פה) מונמכות. אצבע 1 נמוכה על מיתרי רה ולה, ואצבע 2 נמוכה צמודה ל-1 על מיתר סול.",
+          up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1L", "RE2L", "RE3", "LA0", "LA1L", "LA2L", "LA3", "MI0", "MI1L", "MI2L"],
+          down: ["MI2L", "MI1L", "MI0", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2L", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
+          customLabelsUp: {},
+          customLabelsDown: {},
+        },
+        g_harmonic_minor: {
+          id: "g_harmonic_minor",
+          title: "סול מינור הרמוני",
+          badge: "סי♭, מי♭ + פה♯ מוגבה",
+          description:
+            "סולם סול מינור הרמוני: הדרגה השביעית מוגבהת ל-פה♯ ליצירת מתח המוביל לסול. נוצרת מתיחה של טון וחצי בין מי♭ (אצבע 1 נמוכה) ל-פה♯ (אצבע 2 גבוהה).",
+          up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1L", "RE2H", "RE3", "LA0", "LA1L", "LA2L", "LA3", "MI0", "MI1H", "MI2L"],
+          down: ["MI2L", "MI1H", "MI0", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2H", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
+          customLabelsUp: {},
+          customLabelsDown: {},
+        },
+        g_melodic_minor: {
+          id: "g_melodic_minor",
+          title: "סול מינור מלודי",
+          badge: "עלייה: מי♮, פה♯ | ירידה: פה♮, מי♭",
+          description:
+            "סולם סול מינור מלודי: בעלייה מגביהים את הדרגה ה-6 (מי בקר) וה-7 (פה♯) למלודיה זורמת, ובירידה מחזירים אותן למצב הטבעי (פה בקר ו-מי♭).",
+          up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1H", "RE2H", "RE3", "LA0", "LA1L", "LA2L", "LA3", "MI0", "MI1H", "MI2L"],
+          down: ["MI2L", "MI1L", "MI0", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2L", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
+          customLabelsUp: { RE1H: "מי♮", MI0: "מי♮" },
+          customLabelsDown: { MI1L: "פה♮", RE2L: "פה♮" },
+        },
+        g_major_arp: {
+          id: "g_major_arp",
+          title: "ארפג'יו סול מז'ור",
+          badge: "דרגות 1 - 3 - 5 (סול, סי, רה)",
+          description:
+            "ארפג'יו סול מז'ור ב-2 אוקטבות: מנגן את צלילי האקורד המשולש (סול - סי - רה). מצוין לאימון על דיוק באינטונציה ומעבר חלק בין מיתרים.",
+          up: ["SOL0", "SOL2H", "RE0", "RE3", "LA1H", "LA3", "MI2L"],
+          down: ["MI2L", "LA3", "LA1H", "RE3", "RE0", "SOL2H", "SOL0"],
+          customLabelsUp: {},
+          customLabelsDown: {},
+        },
+        g_minor_arp: {
+          id: "g_minor_arp",
+          title: "ארפג'יו סול מינור",
+          badge: "דרגות 1 - 3♭ - 5 (סול, סי♭, רה)",
+          description:
+            "ארפג'יו סול מינור ב-2 אוקטבות: מבוסס על טרצה קטנה (סי♭ במקום סי). שים לב לאצבע 2 הנמוכה על מיתר סול ולאצבע 1 הנמוכה על מיתר לה.",
+          up: ["SOL0", "SOL2L", "RE0", "RE3", "LA1L", "LA3", "MI2L"],
+          down: ["MI2L", "LA3", "LA1L", "RE3", "RE0", "SOL2L", "SOL0"],
+          customLabelsUp: {},
+          customLabelsDown: {},
+        },
+      };
+
+      /**
+       * ============================================================================
+       * 3. ניהול מצב (State), מטרונום ולופ
+       * ============================================================================
+       */
+      let currentExerciseKey = "g_major";
+      let directionMode = "up_down"; // 'up_down' | 'up_only' | 'down_only'
+      let isLoopEnabled = false;
+      let isCountInEnabled = true;
+
+      let isScalePlaying = false;
+      let isStandaloneMetroOn = false;
+      let bpm = 76;
+      let subdivision = 1; // 1 = רבעים, 2 = שמיניות
+
+      let currentSequence = [];
+      let playStepIndex = 0;
+      let countInRemaining = 0;
+      let cycleCount = 0;
+      let globalTickCounter = 0; // סופר צעדים לסנכרון נוריות מטרונום
+      let schedulerTimer = null;
+
+      // בניית רצף התווים בהתאם לכיוון הנבחר (עלייה וירידה / עלייה / ירידה)
+      function buildExerciseSequence(exKey, dirMode) {
+        const ex = EXERCISES[exKey];
+        const seq = [];
+
+        const appendList = (idList, dir, customMap, skipFirst = false) => {
+          idList.forEach((posId, idx) => {
+            if (skipFirst && idx === 0) return; // מניעת הכפלת התו העליון במעבר מעלייה לירידה
+            const base = POS_MAP[posId];
+            const customLabel = customMap && customMap[posId] ? customMap[posId] : base.solfege;
+            seq.push({
+              ...base,
+              displayLabel: localizeNoteName(customLabel),
+              direction: dir,
+              stepIndex: seq.length,
+            });
+          });
         };
 
-        /**
-         * ============================================================================
-         * 3. ניהול מצב (State), מטרונום ולופ
-         * ============================================================================
-         */
-        let currentExerciseKey = 'g_major';
-        let directionMode = 'up_down'; // 'up_down' | 'up_only' | 'down_only'
-        let isLoopEnabled = false;
-        let isCountInEnabled = true;
-
-        let isScalePlaying = false;
-        let isStandaloneMetroOn = false;
-        let bpm = 76;
-        let subdivision = 1; // 1 = רבעים, 2 = שמיניות
-
-        let currentSequence = [];
-        let playStepIndex = 0;
-        let countInRemaining = 0;
-        let cycleCount = 0;
-        let globalTickCounter = 0; // סופר צעדים לסנכרון נוריות מטרונום
-        let schedulerTimer = null;
-
-        // בניית רצף התווים בהתאם לכיוון הנבחר (עלייה וירידה / עלייה / ירידה)
-        function buildExerciseSequence(exKey, dirMode) {
-            const ex = EXERCISES[exKey];
-            const seq = [];
-
-            const appendList = (idList, dir, customMap, skipFirst = false) => {
-                idList.forEach((posId, idx) => {
-                    if (skipFirst && idx === 0) return; // מניעת הכפלת התו העליון במעבר מעלייה לירידה
-                    const base = POS_MAP[posId];
-                    const customLabel = (customMap && customMap[posId]) ? customMap[posId] : base.solfege;
-                    seq.push({
-                        ...base,
-                        displayLabel: localizeNoteName(customLabel),
-                        direction: dir,
-                        stepIndex: seq.length
-                    });
-                });
-            };
-
-            if (dirMode === 'up_down') {
-                appendList(ex.up, 'up', ex.customLabelsUp, false);
-                appendList(ex.down, 'down', ex.customLabelsDown, true);
-            } else if (dirMode === 'up_only') {
-                appendList(ex.up, 'up', ex.customLabelsUp, false);
-            } else if (dirMode === 'down_only') {
-                appendList(ex.down, 'down', ex.customLabelsDown, false);
-            }
-
-            return seq;
+        if (dirMode === "up_down") {
+          appendList(ex.up, "up", ex.customLabelsUp, false);
+          appendList(ex.down, "down", ex.customLabelsDown, true);
+        } else if (dirMode === "up_only") {
+          appendList(ex.up, "up", ex.customLabelsUp, false);
+        } else if (dirMode === "down_only") {
+          appendList(ex.down, "down", ex.customLabelsDown, false);
         }
 
-        /**
-         * ============================================================================
-         * 4. רינדור חמשת התווים (ABCjs) והדגשה בזמן אמת
-         * ============================================================================
-         */
-        function renderSheetMusic() {
-            currentSequence = buildExerciseSequence(currentExerciseKey, directionMode);
+        return seq;
+      }
 
-            let notesChunk = [];
-            let lyricsChunk = [];
-            let abcBody = '';
-            let lyricLine = '';
+      /**
+       * ============================================================================
+       * 4. רינדור חמשת התווים (ABCjs) והדגשה בזמן אמת
+       * ============================================================================
+       */
+      function renderSheetMusic() {
+        currentSequence = buildExerciseSequence(currentExerciseKey, directionMode);
 
-            const noteLengthToken = (subdivision === 2) ? '1/8' : '1/4';
-            const notesPerBar = (subdivision === 2) ? 8 : 4;
+        let notesChunk = [];
+        let lyricsChunk = [];
+        let abcBody = "";
+        let lyricLine = "";
 
-            currentSequence.forEach((item, index) => {
-                let abcNote = item.abc;
-                if (item.displayLabel.includes('♮')) {
-                    abcNote = '=' + abcNote.replace('^', '').replace('_', '');
-                }
+        const noteLengthToken = subdivision === 2 ? "1/8" : "1/4";
+        const notesPerBar = subdivision === 2 ? 8 : 4;
 
-                notesChunk.push(abcNote);
-                lyricsChunk.push(item.displayLabel);
+        currentSequence.forEach((item, index) => {
+          let abcNote = item.abc;
+          if (item.displayLabel.includes("♮")) {
+            abcNote = "=" + abcNote.replace("^", "").replace("_", "");
+          }
 
-                if (notesChunk.length === notesPerBar || index === currentSequence.length - 1) {
-                    abcBody += notesChunk.join(' ') + ' | ';
-                    lyricLine += lyricsChunk.join(' ') + ' ';
-                    notesChunk = [];
-                    lyricsChunk = [];
-                }
-            });
+          notesChunk.push(abcNote);
+          lyricsChunk.push(item.displayLabel);
 
-            abcBody = abcBody.replace(/\|\s*$/, '|]');
+          if (notesChunk.length === notesPerBar || index === currentSequence.length - 1) {
+            abcBody += notesChunk.join(" ") + " | ";
+            lyricLine += lyricsChunk.join(" ") + " ";
+            notesChunk = [];
+            lyricsChunk = [];
+          }
+        });
 
-            const abcString = [
-                'X:1',
-                'M:4/4',
-                `L:${noteLengthToken}`,
-                'K:C',
-                abcBody,
-                'w: ' + lyricLine
-            ].join('\n');
+        abcBody = abcBody.replace(/\|\s*$/, "|]");
 
-            try {
-                ABCJS.renderAbc('sheetMusicRender', abcString, {
-                    responsive: 'resize',
-                    staffwidth: 780,
-                    paddingtop: 8,
-                    paddingbottom: 14,
-                    paddingleft: 8,
-                    paddingright: 8,
-                    add_classes: true,
-                    vocalfont: 'Heebo 15 bold'
-                });
-            } catch (e) {
-                // גיבוי טקסטואלי נקי בסולפג' במקרה של חוסר חיבור לרשת
-                document.getElementById('sheetMusicRender').innerHTML =
-                    `<div class="p-4 text-center font-bold text-lg" dir="rtl">${currentSequence.map(n => n.displayLabel).join(' • ')}</div>`;
-            }
+        const abcString = ["X:1", "M:4/4", `L:${noteLengthToken}`, "K:C", abcBody, "w: " + lyricLine].join("\n");
+
+        try {
+          ABCJS.renderAbc("sheetMusicRender", abcString, {
+            responsive: "resize",
+            staffwidth: 780,
+            paddingtop: 8,
+            paddingbottom: 14,
+            paddingleft: 8,
+            paddingright: 8,
+            add_classes: true,
+            vocalfont: "Heebo 15 bold",
+          });
+        } catch (e) {
+          // גיבוי טקסטואלי נקי בסולפג' במקרה של חוסר חיבור לרשת
+          document.getElementById("sheetMusicRender").innerHTML = `<div class="p-4 text-center font-bold text-lg" dir="rtl">${currentSequence
+            .map((n) => n.displayLabel)
+            .join(" • ")}</div>`;
         }
+      }
 
-        function highlightSheetNote(stepIdx) {
-            document.querySelectorAll('#sheetMusicRender .abcjs-highlight').forEach(el => {
-                el.classList.remove('abcjs-highlight');
-            });
-            if (stepIdx < 0) return;
+      function highlightSheetNote(stepIdx) {
+        document.querySelectorAll("#sheetMusicRender .abcjs-highlight").forEach((el) => {
+          el.classList.remove("abcjs-highlight");
+        });
+        if (stepIdx < 0) return;
 
-            const noteElements = document.querySelectorAll('#sheetMusicRender .abcjs-note');
-            if (noteElements[stepIdx]) {
-                noteElements[stepIdx].classList.add('abcjs-highlight');
-            }
+        const noteElements = document.querySelectorAll("#sheetMusicRender .abcjs-note");
+        if (noteElements[stepIdx]) {
+          noteElements[stepIdx].classList.add("abcjs-highlight");
         }
+      }
 
-        /**
-         * ============================================================================
-         * 5. ציור שחיף הכינור הווירטואלי (סולפג' מלא)
-         * ============================================================================
-         */
-        function renderFingerboard() {
-            const svg = document.getElementById('violinFingerboard');
-            const ex = EXERCISES[currentExerciseKey];
-            const upSet = new Set(directionMode !== 'down_only' ? ex.up : []);
-            const downSet = new Set(directionMode !== 'up_only' ? ex.down : []);
+      /**
+       * ============================================================================
+       * 5. ציור שחיף הכינור הווירטואלי (סולפג' מלא)
+       * ============================================================================
+       */
+      function renderFingerboard() {
+        const svg = document.getElementById("violinFingerboard");
+        const ex = EXERCISES[currentExerciseKey];
+        const upSet = new Set(directionMode !== "down_only" ? ex.up : []);
+        const downSet = new Set(directionMode !== "up_only" ? ex.down : []);
 
-            const xCoords = {
-                0: 85,
-                1: 215,
-                2: 345,
-                3: 475,
-                4: 605,
-                5: 735
-            };
+        const xCoords = {
+          0: 85,
+          1: 215,
+          2: 345,
+          3: 475,
+          4: 605,
+          5: 735,
+        };
 
-            const stringsInfo = [
-                { idx: 0, name: 'מיתר סול', y: 48, thickness: 4.2 },
-                { idx: 1, name: 'מיתר רה', y: 103, thickness: 3.3 },
-                { idx: 2, name: 'מיתר לה', y: 158, thickness: 2.5 },
-                { idx: 3, name: 'מיתר מי', y: 213, thickness: 1.8 }
-            ];
+        const stringsInfo = [
+          { idx: 0, name: "מיתר סול", y: 48, thickness: 4.2 },
+          { idx: 1, name: "מיתר רה", y: 103, thickness: 3.3 },
+          { idx: 2, name: "מיתר לה", y: 158, thickness: 2.5 },
+          { idx: 3, name: "מיתר מי", y: 213, thickness: 1.8 },
+        ];
 
-            let svgContent = '';
+        let svgContent = "";
 
-            // עץ הובנה של השחיף
-            svgContent += `<rect x="135" y="22" width="760" height="218" rx="8" fill="#1c1917" stroke="#44403c" stroke-width="2"/>`;
-            // סף הצוואר (Nut)
-            svgContent += `<rect x="130" y="22" width="10" height="218" fill="#f5f5f4" rx="2"/>`;
-            svgContent += `<text x="135" y="15" fill="#d6d3d1" font-size="11" text-anchor="middle" font-weight="bold">סף הצוואר</text>`;
+        // עץ הובנה של השחיף
+        svgContent += `<rect x="135" y="22" width="760" height="218" rx="8" fill="#1c1917" stroke="#44403c" stroke-width="2"/>`;
+        // סף הצוואר (Nut)
+        svgContent += `<rect x="130" y="22" width="10" height="218" fill="#f5f5f4" rx="2"/>`;
+        svgContent += `<text x="135" y="15" fill="#d6d3d1" font-size="11" text-anchor="middle" font-weight="bold">סף הצוואר</text>`;
 
-            const fretLabels = [
-                { semi: 1, label: 'אצבע 1 נמוכה' },
-                { semi: 2, label: 'אצבע 1' },
-                { semi: 3, label: 'אצבע 2 נמוכה' },
-                { semi: 4, label: 'אצבע 2 גבוהה' },
-                { semi: 5, label: 'אצבע 3' }
-            ];
+        const fretLabels = [
+          { semi: 1, label: "אצבע 1 נמוכה" },
+          { semi: 2, label: "אצבע 1" },
+          { semi: 3, label: "אצבע 2 נמוכה" },
+          { semi: 4, label: "אצבע 2 גבוהה" },
+          { semi: 5, label: "אצבע 3" },
+        ];
 
-            fretLabels.forEach(f => {
-                const x = xCoords[f.semi];
-                svgContent += `<line x1="${x}" y1="25" x2="${x}" y2="238" stroke="#292524" stroke-width="1.5" stroke-dasharray="4 4"/>`;
-                svgContent += `<text x="${x}" y="256" fill="#a8a29e" font-size="11" text-anchor="middle">${f.label}</text>`;
-            });
+        fretLabels.forEach((f) => {
+          const x = xCoords[f.semi];
+          svgContent += `<line x1="${x}" y1="25" x2="${x}" y2="238" stroke="#292524" stroke-width="1.5" stroke-dasharray="4 4"/>`;
+          svgContent += `<text x="${x}" y="256" fill="#a8a29e" font-size="11" text-anchor="middle">${f.label}</text>`;
+        });
 
-            stringsInfo.forEach(st => {
-                svgContent += `<line x1="135" y1="${st.y}" x2="895" y2="${st.y}" stroke="#e7e5e4" stroke-width="${st.thickness}" opacity="0.88"/>`;
-                svgContent += `<text x="882" y="${st.y - 9}" fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="end">${st.name}</text>`;
-            });
+        stringsInfo.forEach((st) => {
+          svgContent += `<line x1="135" y1="${st.y}" x2="895" y2="${st.y}" stroke="#e7e5e4" stroke-width="${st.thickness}" opacity="0.88"/>`;
+          svgContent += `<text x="882" y="${st.y - 9}" fill="#fbbf24" font-size="12" font-weight="bold" text-anchor="end">${st.name}</text>`;
+        });
 
-            FINGERBOARD_POSITIONS.forEach(pos => {
-                const x = xCoords[pos.semitone];
-                const y = stringsInfo[pos.stringIdx].y;
+        FINGERBOARD_POSITIONS.forEach((pos) => {
+          const x = xCoords[pos.semitone];
+          const y = stringsInfo[pos.stringIdx].y;
 
-                const inUp = upSet.has(pos.id);
-                const inDown = downSet.has(pos.id);
-                const isActiveInScale = inUp || inDown;
+          const inUp = upSet.has(pos.id);
+          const inDown = downSet.has(pos.id);
+          const isActiveInScale = inUp || inDown;
 
-                let fillColor = '#334155';
-                let strokeColor = '#475569';
-                let opacity = isActiveInScale ? '1' : '0.30';
+          let fillColor = "#334155";
+          let strokeColor = "#475569";
+          let opacity = isActiveInScale ? "1" : "0.30";
 
-                if (isActiveInScale) {
-                    if (pos.semitone === 0) {
-                        fillColor = '#10b981';
-                        strokeColor = '#a7f3d0';
-                    } else if (directionMode === 'up_down' && ((inUp && !inDown) || (!inUp && inDown))) {
-                        fillColor = '#f59e0b';
-                        strokeColor = '#fde68a';
-                    } else {
-                        fillColor = '#0284c7';
-                        strokeColor = '#bae6fd';
-                    }
-                }
+          if (isActiveInScale) {
+            if (pos.semitone === 0) {
+              fillColor = "#10b981";
+              strokeColor = "#a7f3d0";
+            } else if (directionMode === "up_down" && ((inUp && !inDown) || (!inUp && inDown))) {
+              fillColor = "#f59e0b";
+              strokeColor = "#fde68a";
+            } else {
+              fillColor = "#0284c7";
+              strokeColor = "#bae6fd";
+            }
+          }
 
-                const shortFinger = pos.semitone === 0 ? '0' : pos.finger.replace('אצבע ', '');
+          const shortFinger = pos.semitone === 0 ? "0" : pos.finger.replace("אצבע ", "");
 
-                svgContent += `
+          svgContent += `
                     <g class="note-marker" id="fb-note-${pos.id}" data-pos-id="${pos.id}" opacity="${opacity}">
                         <circle cx="${x}" cy="${y}" r="16" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>
-                        <text x="${x}" y="${y - 2}" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">${typeof localizeNoteName === 'function' ? localizeNoteName(pos.solfege) : pos.solfege}</text>
+                        <text x="${x}" y="${y - 2}" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">${
+                          typeof localizeNoteName === "function" ? localizeNoteName(pos.solfege) : pos.solfege
+                        }</text>
                         <text x="${x}" y="${y + 10}" fill="#f1f5f9" font-size="8.5" font-weight="700" text-anchor="middle">(${shortFinger})</text>
                     </g>
                 `;
-            });
-
-            svg.innerHTML = svgContent;
-
-            document.querySelectorAll('.note-marker').forEach(el => {
-                el.addEventListener('click', () => {
-                    const posId = el.getAttribute('data-pos-id');
-                    const posObj = POS_MAP[posId];
-                    if (posObj) {
-                        audioEngine.playViolinNote(posObj.midi, 0.7);
-                        highlightFingerboardNote(posId);
-                        updateLiveIllustration(posObj, posObj.solfege, 'לחיצה ידנית');
-                        setTimeout(() => {
-                            if (!isScalePlaying) highlightFingerboardNote(null);
-                        }, 650);
-                    }
-                });
-            });
-        }
-
-        function highlightFingerboardNote(posId) {
-            document.querySelectorAll('.note-marker.active-playing').forEach(el => {
-                el.classList.remove('active-playing');
-            });
-            if (posId) {
-                const target = document.getElementById(`fb-note-${posId}`);
-                if (target) target.classList.add('active-playing');
-            }
-        }
-
-        /**
-         * ============================================================================
-         * 6. עדכון כרטיס האילוסטרציה החיה של התו המתנגן
-         * ============================================================================
-         */
-        function updateLiveIllustration(posObj, displayLabel, statusText = '', direction = '') {
-            const noteEl = document.getElementById('liveNoteName');
-            const stringEl = document.getElementById('liveStringName');
-            const fingerEl = document.getElementById('liveFingerNum');
-            const dirBadge = document.getElementById('liveDirectionBadge');
-            const subtextEl = document.getElementById('liveStatusSubtext');
-            const pitchFill = document.getElementById('pitchHeightFill');
-            const box = document.getElementById('liveIllustrationBox');
-
-            if (!posObj) {
-                noteEl.textContent = '—';
-                stringEl.textContent = '—';
-                fingerEl.textContent = '—';
-                dirBadge.textContent = 'מוכן לנגינה';
-                subtextEl.textContent = statusText || 'בחר סולם ולחץ נגן';
-                pitchFill.style.height = '10%';
-                return;
-            }
-
-            noteEl.textContent = displayLabel || posObj.solfege;
-            stringEl.textContent = posObj.stringName;
-            fingerEl.textContent = posObj.finger;
-            subtextEl.textContent = statusText;
-
-            if (direction === 'up') {
-                dirBadge.textContent = 'עלייה ↗';
-                dirBadge.className = 'text-xs font-extrabold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
-            } else if (direction === 'down') {
-                dirBadge.textContent = 'ירידה ↘';
-                dirBadge.className = 'text-xs font-extrabold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40';
-            } else {
-                dirBadge.textContent = 'האזנה לתו';
-                dirBadge.className = 'text-xs font-bold px-2.5 py-1 rounded-full inset-box';
-            }
-
-            // חישוב גובה הצליל באחוזים (מ-MIDI 55 סול נמוך עד MIDI 79 סול גבוה)
-            const ratio = Math.min(1, Math.max(0.08, (posObj.midi - 53) / (80 - 53)));
-            pitchFill.style.height = `${Math.round(ratio * 100)}%`;
-
-            // הפעלת אנימציית פעימה
-            box.classList.remove('animate-note-hit');
-            void box.offsetWidth;
-            box.classList.add('animate-note-hit');
-        }
-
-        function flashMetronomeLed(beatIdx, isAccent) {
-            const leds = document.querySelectorAll('#metronomeLeds .beat-led');
-            leds.forEach((led, idx) => {
-                led.classList.remove('active-accent', 'active-regular');
-                if (idx === beatIdx) {
-                    led.classList.add(isAccent ? 'active-accent' : 'active-regular');
-                }
-            });
-        }
-
-        /**
-         * ============================================================================
-         * 7. מנוע תזמון מאוחד (מטרונום + נגינת סולם + לופ + ספירה מקדימה)
-         * ============================================================================
-         */
-        function getStepIntervalMs() {
-            const quarterMs = (60 / bpm) * 1000;
-            return (subdivision === 2) ? (quarterMs / 2) : quarterMs;
-        }
-
-        function startEngineLoop() {
-            clearTimeout(schedulerTimer);
-            globalTickCounter = 0;
-            runEngineTick();
-        }
-
-        function stopEngineLoopIfIdle() {
-            if (!isScalePlaying && !isStandaloneMetroOn) {
-                clearTimeout(schedulerTimer);
-                document.querySelectorAll('#metronomeLeds .beat-led').forEach(led => {
-                    led.classList.remove('active-accent', 'active-regular');
-                });
-            }
-        }
-
-        function runEngineTick() {
-            if (!isScalePlaying && !isStandaloneMetroOn) return;
-
-            const stepMs = getStepIntervalMs();
-            const isMainBeat = (subdivision === 1) || (globalTickCounter % 2 === 0);
-            const beatNumberInBar = (subdivision === 1)
-                ? (globalTickCounter % 4)
-                : (Math.floor(globalTickCounter / 2) % 4);
-
-            // 1. הפעלת קליק וויזואליות של מטרונום (אם פעיל או בזמן ספירה מקדימה)
-            if (isMainBeat) {
-                const isAccent = (beatNumberInBar === 0);
-                flashMetronomeLed(beatNumberInBar, isAccent);
-                if (isStandaloneMetroOn || (isScalePlaying && countInRemaining > 0)) {
-                    audioEngine.playMetronomeClick(isAccent ? 'accent' : 'regular');
-                }
-            } else if (isStandaloneMetroOn) {
-                audioEngine.playMetronomeClick('sub');
-            }
-
-            // 2. לוגיקת נגינת סולם (ספירה מקדימה -> נגינת תווים -> לופ או עצירה)
-            if (isScalePlaying) {
-                if (countInRemaining > 0) {
-                    // ספירה מקדימה של 4 פעמות לפני תחילת הנגינה
-                    if (isMainBeat) {
-                        const countNum = 5 - countInRemaining;
-                        document.getElementById('liveNoteName').textContent = `${countNum}`;
-                        document.getElementById('liveDirectionBadge').textContent = 'ספירה מקדימה...';
-                        document.getElementById('liveStatusSubtext').textContent = 'הכן את הקשת על מיתר סול';
-                        countInRemaining--;
-                    }
-                } else {
-                    // בדיקה אם הגענו לסוף הסולם
-                    if (playStepIndex >= currentSequence.length) {
-                        if (isLoopEnabled) {
-                            playStepIndex = 0;
-                            cycleCount++;
-                            document.getElementById('cycleCounter').textContent = cycleCount;
-                        } else {
-                            stopScalePlayback();
-                            if (!isStandaloneMetroOn) return;
-                        }
-                    }
-
-                    if (isScalePlaying && playStepIndex < currentSequence.length) {
-                        const item = currentSequence[playStepIndex];
-                        const noteDurationSec = Math.max(0.18, (stepMs / 1000) * 0.9);
-
-                        audioEngine.playViolinNote(item.midi, noteDurationSec);
-                        highlightSheetNote(playStepIndex);
-                        highlightFingerboardNote(item.id);
-                        updateLiveIllustration(
-                            item,
-                            item.displayLabel,
-                            `תו ${playStepIndex + 1} מתוך ${currentSequence.length}`,
-                            item.direction
-                        );
-
-                        playStepIndex++;
-                    }
-                }
-            }
-
-            globalTickCounter++;
-            schedulerTimer = setTimeout(runEngineTick, stepMs);
-        }
-
-        function startScalePlayback() {
-            audioEngine.init();
-            isScalePlaying = true;
-            playStepIndex = 0;
-            cycleCount = 1;
-            document.getElementById('cycleCounter').textContent = cycleCount;
-            countInRemaining = isCountInEnabled ? 4 : 0;
-
-            const playBtn = document.getElementById('playStopBtn');
-            playBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
-            playBtn.classList.add('bg-rose-600', 'hover:bg-rose-500');
-            document.getElementById('playIcon').textContent = '⏹';
-            document.getElementById('playText').textContent = 'עצור נגינה';
-
-            startEngineLoop();
-        }
-
-        function stopScalePlayback() {
-            isScalePlaying = false;
-            playStepIndex = 0;
-            countInRemaining = 0;
-
-            const playBtn = document.getElementById('playStopBtn');
-            playBtn.classList.remove('bg-rose-600', 'hover:bg-rose-500');
-            playBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
-            document.getElementById('playIcon').textContent = '▶';
-            document.getElementById('playText').textContent = 'נגן סולם';
-
-            highlightSheetNote(-1);
-            highlightFingerboardNote(null);
-            updateLiveIllustration(null);
-            stopEngineLoopIfIdle();
-        }
-
-        /**
-         * ============================================================================
-         * 8. בדיקת שמיעה בסולפג'
-         * ============================================================================
-         */
-        let earTargetNote = null;
-
-        function setupEarTraining() {
-            const earPlayBtn = document.getElementById('earPlayBtn');
-            const earRepeatBtn = document.getElementById('earRepeatBtn');
-            const earOptions = document.getElementById('earOptions');
-            const earFeedback = document.getElementById('earFeedback');
-
-            earPlayBtn.addEventListener('click', () => {
-                if (isScalePlaying) stopScalePlayback();
-
-                const randomIdx = Math.floor(Math.random() * currentSequence.length);
-                earTargetNote = currentSequence[randomIdx];
-
-                audioEngine.playViolinNote(earTargetNote.midi, 0.85);
-                earRepeatBtn.disabled = false;
-                earFeedback.textContent = 'איזה תו שמעת? בחר או נגן על הכינור:';
-                earFeedback.className = 'text-xs font-bold text-amber-400 min-h-[18px]';
-
-                const uniqueSolfege = [...new Set(currentSequence.map(item => item.displayLabel))];
-                earOptions.innerHTML = '';
-
-                uniqueSolfege.forEach(label => {
-                    const btn = document.createElement('button');
-                    btn.textContent = label;
-                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold border transition inset-box hover:border-amber-500';
-
-                    btn.addEventListener('click', () => {
-                        if (!earTargetNote) return;
-                        if (label === earTargetNote.displayLabel) {
-                            earFeedback.textContent = `✅ מצוין! התו הוא ${earTargetNote.displayLabel} (${earTargetNote.stringName}, ${earTargetNote.finger})`;
-                            earFeedback.className = 'text-xs font-bold text-emerald-400 min-h-[18px]';
-                            highlightFingerboardNote(earTargetNote.id);
-                            updateLiveIllustration(earTargetNote, earTargetNote.displayLabel, 'זיהוי שמיעה מוצלח!');
-                            audioEngine.playViolinNote(earTargetNote.midi, 0.7);
-                        } else {
-                            earFeedback.textContent = `❌ בחרת ${label} — נסה להאזין שוב לצליל!`;
-                            earFeedback.className = 'text-xs font-bold text-rose-400 min-h-[18px]';
-                        }
-                    });
-
-                    earOptions.appendChild(btn);
-                });
-            });
-
-            earRepeatBtn.addEventListener('click', () => {
-                if (earTargetNote) {
-                    audioEngine.playViolinNote(earTargetNote.midi, 0.85);
-                }
-            });
-        }
-
-        /**
-         * ============================================================================
-         * 9. אתחול האפליקציה וחיבור אירועי הממשק
-         * ============================================================================
-         */
-        function updateBpm(newBpm) {
-            bpm = Math.min(180, Math.max(40, newBpm));
-            document.getElementById('bpmValue').textContent = bpm;
-            document.getElementById('bpmSlider').value = bpm;
-        }
-
-        function selectExercise(exKey) {
-            if (isScalePlaying) stopScalePlayback();
-            currentExerciseKey = exKey;
-            const ex = EXERCISES[exKey];
-
-            document.querySelectorAll('.ex-select-btn').forEach(btn => {
-                if (btn.getAttribute('data-key') === exKey) {
-                    btn.classList.add('bg-amber-600', 'text-white', 'border-amber-400', 'shadow-md');
-                } else {
-                    btn.classList.remove('bg-amber-600', 'text-white', 'border-amber-400', 'shadow-md');
-                }
-            });
-
-            document.getElementById('scaleTheoryBadge').textContent = ex.badge;
-            document.getElementById('scaleDescription').textContent = ex.description;
-            document.getElementById('cycleCounter').textContent = '0';
-
-            earTargetNote = null;
-            document.getElementById('earRepeatBtn').disabled = true;
-            document.getElementById('earOptions').innerHTML = '<span class="text-xs italic" style="color: var(--text-secondary);">לחץ על "השמע תו אקראי" להתחלה...</span>';
-            document.getElementById('earFeedback').textContent = '';
-
-            renderSheetMusic();
-            renderFingerboard();
-        }
-
-        function initApp() {
-            // 1. כפתורי בחירת סולם
-            const btnContainer = document.getElementById('exerciseButtons');
-            Object.values(EXERCISES).forEach(ex => {
-                const btn = document.createElement('button');
-                btn.textContent = ex.title;
-                btn.setAttribute('data-key', ex.id);
-                btn.className = 'ex-select-btn px-3 py-2.5 rounded-xl text-xs md:text-sm font-extrabold border transition text-center inset-box';
-                btn.addEventListener('click', () => selectExercise(ex.id));
-                btnContainer.appendChild(btn);
-            });
-
-            // 2. כפתור נגן / עצור סולם
-            document.getElementById('playStopBtn').addEventListener('click', () => {
-                if (isScalePlaying) stopScalePlayback();
-                else startScalePlayback();
-            });
-
-            // 3. מתג לופ רציף
-            const loopBtn = document.getElementById('loopToggleBtn');
-            const loopLed = document.getElementById('loopLed');
-            loopBtn.addEventListener('click', () => {
-                isLoopEnabled = !isLoopEnabled;
-                if (isLoopEnabled) {
-                    loopBtn.classList.add('border-emerald-500/70', 'text-emerald-400');
-                    loopLed.classList.remove('bg-slate-500');
-                    loopLed.classList.add('bg-emerald-400', 'animate-pulse');
-                } else {
-                    loopBtn.classList.remove('border-emerald-500/70', 'text-emerald-400');
-                    loopLed.classList.remove('bg-emerald-400', 'animate-pulse');
-                    loopLed.classList.add('bg-slate-500');
-                }
-            });
-
-            // 4. מתג ספירה מקדימה
-            const countInBtn = document.getElementById('countInToggleBtn');
-            const countInLed = document.getElementById('countInLed');
-            countInBtn.addEventListener('click', () => {
-                isCountInEnabled = !isCountInEnabled;
-                if (isCountInEnabled) {
-                    countInBtn.classList.add('border-amber-500/60', 'text-amber-400');
-                    countInLed.classList.remove('bg-slate-500');
-                    countInLed.classList.add('bg-amber-400');
-                } else {
-                    countInBtn.classList.remove('border-amber-500/60', 'text-amber-400');
-                    countInLed.classList.remove('bg-amber-400');
-                    countInLed.classList.add('bg-slate-500');
-                }
-            });
-
-            // 5. בחירת כיוון תנועה (עלייה וירידה / עלייה / ירידה)
-            document.querySelectorAll('.dir-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (isScalePlaying) stopScalePlayback();
-                    directionMode = btn.getAttribute('data-dir');
-                    document.querySelectorAll('.dir-btn').forEach(b => {
-                        b.classList.remove('bg-amber-600', 'text-white');
-                    });
-                    btn.classList.add('bg-amber-600', 'text-white');
-                    renderSheetMusic();
-                    renderFingerboard();
-                });
-            });
-
-            // 6. בקרת צליל עוגן (Drone)
-            const setDroneUI = (activeId, type) => {
-                document.querySelectorAll('.drone-sel-btn').forEach(b => {
-                    b.classList.remove('bg-amber-600', 'text-white');
-                });
-                document.getElementById(activeId).classList.add('bg-amber-600', 'text-white');
-                audioEngine.setDrone(type);
-            };
-            document.getElementById('droneOffBtn').addEventListener('click', () => setDroneUI('droneOffBtn', 'off'));
-            document.getElementById('droneSolBtn').addEventListener('click', () => setDroneUI('droneSolBtn', 'sol'));
-            document.getElementById('droneReBtn').addEventListener('click', () => setDroneUI('droneReBtn', 're'));
-
-            // 7. בקרת מטרונום (סליידר, +/- , Tap Tempo, כפתור הפעלה, חלוקת קצב)
-            document.getElementById('bpmSlider').addEventListener('input', (e) => updateBpm(parseInt(e.target.value, 10)));
-            document.getElementById('bpmMinusBtn').addEventListener('click', () => updateBpm(bpm - 2));
-            document.getElementById('bpmPlusBtn').addEventListener('click', () => updateBpm(bpm + 2));
-
-            let tapTimes = [];
-            document.getElementById('tapTempoBtn').addEventListener('click', () => {
-                const now = performance.now();
-                if (tapTimes.length > 0 && (now - tapTimes[tapTimes.length - 1]) > 2000) {
-                    tapTimes = [];
-                }
-                tapTimes.push(now);
-                if (tapTimes.length > 4) tapTimes.shift();
-                if (tapTimes.length >= 2) {
-                    const diffs = [];
-                    for (let i = 1; i < tapTimes.length; i++) {
-                        diffs.push(tapTimes[i] - tapTimes[i - 1]);
-                    }
-                    const avgMs = diffs.reduce((a, b) => a + b, 0) / diffs.length;
-                    updateBpm(Math.round(60000 / avgMs));
-                }
-            });
-
-            const metroBtn = document.getElementById('metroToggleBtn');
-            const metroLed = document.getElementById('metroLed');
-            const metroBtnText = document.getElementById('metroBtnText');
-            metroBtn.addEventListener('click', () => {
-                isStandaloneMetroOn = !isStandaloneMetroOn;
-                if (isStandaloneMetroOn) {
-                    audioEngine.init();
-                    metroBtn.classList.add('border-amber-500', 'text-amber-400');
-
-                    metroLed.classList.remove('bg-slate-500');
-                    metroLed.classList.add('bg-amber-400', 'animate-pulse');
-                    metroBtnText.textContent = 'מטרונום פועל';
-                    if (!isScalePlaying) startEngineLoop();
-                } else {
-                    metroBtn.classList.remove('border-amber-500', 'text-amber-400');
-                    metroLed.classList.remove('bg-amber-400', 'animate-pulse');
-                    metroLed.classList.add('bg-slate-500');
-                    metroBtnText.textContent = 'הפעל מטרונום';
-                    stopEngineLoopIfIdle();
-                }
-            });
-
-            document.getElementById('subdivisionSelect').addEventListener('change', (e) => {
-                subdivision = parseInt(e.target.value, 10);
-                renderSheetMusic();
-            });
-
-            // 8. כיוון תדר 440/442 הרץ וערכת נושא
-            document.getElementById('tuningToggle').addEventListener('click', () => {
-                audioEngine.a4Freq = (audioEngine.a4Freq === 440) ? 442 : 440;
-                document.getElementById('tuningLabel').textContent = `לה = ${audioEngine.a4Freq} הרץ`;
-                audioEngine.updateDronePitch();
-            });
-
-            document.getElementById('themeToggle').addEventListener('click', () => {
-                document.body.classList.toggle('light-theme');
-            });
-
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
-            });
-
-            setupEarTraining();
-            selectExercise('g_major');
-        }
-
-        window.addEventListener('DOMContentLoaded', initApp);
-
-        /**
-         * ============================================================================
-         * תרגום והחלפת שפה
-         * ============================================================================
-         */
-        const I18N = {
-            he: {
-                title: 'מעבדת אימון לכינור — סולפג\' קבוע',
-                subtitle: 'סולמות, ארפג\'יו, מטרונום, נגינה בלופ ואילוסטרציה חיה (דו, רה, מי, פה, סול, לה, סי)',
-                tuning: 'כיוון תזמורתי:',
-                theme: 'ערכת צבע',
-                playScale: 'נגן סולם',
-                stopScale: 'עצור נגינה',
-                loop: 'לופ רציף',
-                countIn: 'ספירה מקדימה (4)',
-                tap: 'הקש קצב',
-                metroRunning: 'מטרונום פועל',
-                metroOn: 'הפעל מטרונום',
-                earPlay: 'השמע תו אקראי',
-                earRepeat: 'שוב'
-            },
-            en: {
-                title: 'Violin Practice Lab — Fixed Solfège',
-                subtitle: 'Scales, Arpeggios, Metronome, Loop Playback, and Live Illustration (C, D, E, F, G, A, B)',
-                tuning: 'Tuning:',
-                theme: 'Color Theme',
-                playScale: 'Play Scale',
-                stopScale: 'Stop Scale',
-                loop: 'Continuous Loop',
-                countIn: 'Count-in (4)',
-                tap: 'Tap Tempo',
-                metroRunning: 'Metronome Running',
-                metroOn: 'Turn On Metronome',
-                earPlay: 'Play Random Note',
-                earRepeat: 'Repeat'
-            },
-            ru: {
-                title: 'Лаборатория практики скрипки — Фиксированная сольфеджио',
-                subtitle: 'Масштабы, арпеджио, метроном, воспроизведение в петле и живая иллюстрация (До, Ре, Ми, Фа, Соль, Ля, Си)',
-                tuning: 'Настройка:',
-                theme: 'Цветовая тема',
-                playScale: 'Играть масштаб',
-                stopScale: 'Остановить игру',
-                loop: 'Непрерывная петля',
-                countIn: 'Счет (4)',
-                tap: 'Темп нажатия',
-                metroRunning: 'Метроном работает',
-                metroOn: 'Включить метроном',
-                earPlay: 'Играть случайную ноту',
-                earRepeat: 'Повторить'
-            }
-        };
-
-        let currentLanguage = 'he';
-
-        function setText(elementId, text) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.textContent = text;
-            }
-        }
-
-        function applyLanguage(lang) {
-            currentLanguage = lang;
-            document.documentElement.lang = lang;
-            document.body.dir = (lang === 'he') ? 'rtl' : 'ltr';
-            const t = I18N[lang];
-
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
-            document.querySelector('h1').textContent = t.title;
-            const subtitle = document.querySelector('header p');
-            if (subtitle) subtitle.textContent = t.subtitle;
-
-            const tuningToggle = document.getElementById('tuningToggle');
-            if (tuningToggle) tuningToggle.innerHTML = `<span>🎵 ${t.tuning}</span><span id="tuningLabel" class="text-amber-400">${lang === 'he' ? 'לה' : (lang === 'ru' ? 'ля' : 'A')} = ${audioEngine.a4Freq} Hz</span>`;
-            setText('themeToggle', `🌓 ${t.theme}`);
-            setText('playText', isScalePlaying ? t.stopScale : t.playScale);
-
-            setText('loopToggleBtn', t.loop);
-            setText('countInToggleBtn', t.countIn);
-            setText('tapTempoBtn', `👆 ${t.tap}`);
-            setText('metroBtnText', isStandaloneMetroOn ? t.metroRunning : t.metroOn);
-            setText('earPlayBtn', `🔊 ${t.earPlay}`);
-            setText('earRepeatBtn', `🔁 ${t.earRepeat}`);
-
-            const exerciseNames = {
-                he: null,
-                en: ['G Major','G Natural Minor','G Harmonic Minor','G Melodic Minor','G Major Arpeggio','G Minor Arpeggio'],
-                ru: ['Соль мажор','Соль натуральный минор','Соль гармонический минор','Соль мелодический минор','Арпеджио соль мажор','Арпеджио соль минор']
-            };
-            if (exerciseNames[lang]) {
-                document.querySelectorAll('.ex-select-btn').forEach((btn, i) => btn.textContent = exerciseNames[lang][i]);
-            }
-
-            renderSheetMusic();
-            renderFingerboard();
-            selectExercise(currentExerciseKey);
-        }
-
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const lang = btn.dataset.lang;
-                applyLanguage(lang);
-            });
         });
 
-        applyLanguage(currentLanguage);
+        svg.innerHTML = svgContent;
+
+        document.querySelectorAll(".note-marker").forEach((el) => {
+          el.addEventListener("click", () => {
+            const posId = el.getAttribute("data-pos-id");
+            const posObj = POS_MAP[posId];
+            if (posObj) {
+              audioEngine.playViolinNote(posObj.midi, 0.7);
+              highlightFingerboardNote(posId);
+              updateLiveIllustration(posObj, posObj.solfege, "לחיצה ידנית");
+              setTimeout(() => {
+                if (!isScalePlaying) highlightFingerboardNote(null);
+              }, 650);
+            }
+          });
+        });
+      }
+
+      function highlightFingerboardNote(posId) {
+        document.querySelectorAll(".note-marker.active-playing").forEach((el) => {
+          el.classList.remove("active-playing");
+        });
+        if (posId) {
+          const target = document.getElementById(`fb-note-${posId}`);
+          if (target) target.classList.add("active-playing");
+        }
+      }
+
+      /**
+       * ============================================================================
+       * 6. עדכון כרטיס האילוסטרציה החיה של התו המתנגן
+       * ============================================================================
+       */
+      function updateLiveIllustration(posObj, displayLabel, statusText = "", direction = "") {
+        const noteEl = document.getElementById("liveNoteName");
+        const stringEl = document.getElementById("liveStringName");
+        const fingerEl = document.getElementById("liveFingerNum");
+        const dirBadge = document.getElementById("liveDirectionBadge");
+        const subtextEl = document.getElementById("liveStatusSubtext");
+        const pitchFill = document.getElementById("pitchHeightFill");
+        const box = document.getElementById("liveIllustrationBox");
+
+        if (!posObj) {
+          noteEl.textContent = "—";
+          stringEl.textContent = "—";
+          fingerEl.textContent = "—";
+          dirBadge.textContent = "מוכן לנגינה";
+          subtextEl.textContent = statusText || "בחר סולם ולחץ נגן";
+          pitchFill.style.height = "10%";
+          return;
+        }
+
+        noteEl.textContent = displayLabel || posObj.solfege;
+        stringEl.textContent = posObj.stringName;
+        fingerEl.textContent = posObj.finger;
+        subtextEl.textContent = statusText;
+
+        if (direction === "up") {
+          dirBadge.textContent = "עלייה ↗";
+          dirBadge.className = "text-xs font-extrabold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+        } else if (direction === "down") {
+          dirBadge.textContent = "ירידה ↘";
+          dirBadge.className = "text-xs font-extrabold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40";
+        } else {
+          dirBadge.textContent = "האזנה לתו";
+          dirBadge.className = "text-xs font-bold px-2.5 py-1 rounded-full inset-box";
+        }
+
+        // חישוב גובה הצליל באחוזים (מ-MIDI 55 סול נמוך עד MIDI 79 סול גבוה)
+        const ratio = Math.min(1, Math.max(0.08, (posObj.midi - 53) / (80 - 53)));
+        pitchFill.style.height = `${Math.round(ratio * 100)}%`;
+
+        // הפעלת אנימציית פעימה
+        box.classList.remove("animate-note-hit");
+        void box.offsetWidth;
+        box.classList.add("animate-note-hit");
+      }
+
+      function flashMetronomeLed(beatIdx, isAccent) {
+        const leds = document.querySelectorAll("#metronomeLeds .beat-led");
+        leds.forEach((led, idx) => {
+          led.classList.remove("active-accent", "active-regular");
+          if (idx === beatIdx) {
+            led.classList.add(isAccent ? "active-accent" : "active-regular");
+          }
+        });
+      }
+
+      /**
+       * ============================================================================
+       * 7. מנוע תזמון מאוחד (מטרונום + נגינת סולם + לופ + ספירה מקדימה)
+       * ============================================================================
+       */
+      function getStepIntervalMs() {
+        const quarterMs = (60 / bpm) * 1000;
+        return subdivision === 2 ? quarterMs / 2 : quarterMs;
+      }
+
+      function startEngineLoop() {
+        clearTimeout(schedulerTimer);
+        globalTickCounter = 0;
+        runEngineTick();
+      }
+
+      function stopEngineLoopIfIdle() {
+        if (!isScalePlaying && !isStandaloneMetroOn) {
+          clearTimeout(schedulerTimer);
+          document.querySelectorAll("#metronomeLeds .beat-led").forEach((led) => {
+            led.classList.remove("active-accent", "active-regular");
+          });
+        }
+      }
+
+      function runEngineTick() {
+        if (!isScalePlaying && !isStandaloneMetroOn) return;
+
+        const stepMs = getStepIntervalMs();
+        const isMainBeat = subdivision === 1 || globalTickCounter % 2 === 0;
+        const beatNumberInBar = subdivision === 1 ? globalTickCounter % 4 : Math.floor(globalTickCounter / 2) % 4;
+
+        // 1. הפעלת קליק וויזואליות של מטרונום (אם פעיל או בזמן ספירה מקדימה)
+        if (isMainBeat) {
+          const isAccent = beatNumberInBar === 0;
+          flashMetronomeLed(beatNumberInBar, isAccent);
+          if (isStandaloneMetroOn || (isScalePlaying && countInRemaining > 0)) {
+            audioEngine.playMetronomeClick(isAccent ? "accent" : "regular");
+          }
+        } else if (isStandaloneMetroOn) {
+          audioEngine.playMetronomeClick("sub");
+        }
+
+        // 2. לוגיקת נגינת סולם (ספירה מקדימה -> נגינת תווים -> לופ או עצירה)
+        if (isScalePlaying) {
+          if (countInRemaining > 0) {
+            // ספירה מקדימה של 4 פעמות לפני תחילת הנגינה
+            if (isMainBeat) {
+              const countNum = 5 - countInRemaining;
+              document.getElementById("liveNoteName").textContent = `${countNum}`;
+              document.getElementById("liveDirectionBadge").textContent = "ספירה מקדימה...";
+              document.getElementById("liveStatusSubtext").textContent = "הכן את הקשת על מיתר סול";
+              countInRemaining--;
+            }
+          } else {
+            // בדיקה אם הגענו לסוף הסולם
+            if (playStepIndex >= currentSequence.length) {
+              if (isLoopEnabled) {
+                playStepIndex = 0;
+                cycleCount++;
+                document.getElementById("cycleCounter").textContent = cycleCount;
+              } else {
+                stopScalePlayback();
+                if (!isStandaloneMetroOn) return;
+              }
+            }
+
+            if (isScalePlaying && playStepIndex < currentSequence.length) {
+              const item = currentSequence[playStepIndex];
+              const noteDurationSec = Math.max(0.18, (stepMs / 1000) * 0.9);
+
+              audioEngine.playViolinNote(item.midi, noteDurationSec);
+              highlightSheetNote(playStepIndex);
+              highlightFingerboardNote(item.id);
+              updateLiveIllustration(item, item.displayLabel, `תו ${playStepIndex + 1} מתוך ${currentSequence.length}`, item.direction);
+
+              playStepIndex++;
+            }
+          }
+        }
+
+        globalTickCounter++;
+        schedulerTimer = setTimeout(runEngineTick, stepMs);
+      }
+
+      function startScalePlayback() {
+        audioEngine.init();
+        isScalePlaying = true;
+        playStepIndex = 0;
+        cycleCount = 1;
+        document.getElementById("cycleCounter").textContent = cycleCount;
+        countInRemaining = isCountInEnabled ? 4 : 0;
+
+        const playBtn = document.getElementById("playStopBtn");
+        playBtn.classList.remove("bg-emerald-600", "hover:bg-emerald-500");
+        playBtn.classList.add("bg-rose-600", "hover:bg-rose-500");
+        document.getElementById("playIcon").textContent = "⏹";
+        document.getElementById("playText").textContent = "עצור נגינה";
+
+        startEngineLoop();
+      }
+
+      function stopScalePlayback() {
+        isScalePlaying = false;
+        playStepIndex = 0;
+        countInRemaining = 0;
+
+        const playBtn = document.getElementById("playStopBtn");
+        playBtn.classList.remove("bg-rose-600", "hover:bg-rose-500");
+        playBtn.classList.add("bg-emerald-600", "hover:bg-emerald-500");
+        document.getElementById("playIcon").textContent = "▶";
+        document.getElementById("playText").textContent = "נגן סולם";
+
+        highlightSheetNote(-1);
+        highlightFingerboardNote(null);
+        updateLiveIllustration(null);
+        stopEngineLoopIfIdle();
+      }
+
+      /**
+       * ============================================================================
+       * 8. בדיקת שמיעה בסולפג'
+       * ============================================================================
+       */
+      let earTargetNote = null;
+
+      function setupEarTraining() {
+        const earPlayBtn = document.getElementById("earPlayBtn");
+        const earRepeatBtn = document.getElementById("earRepeatBtn");
+        const earOptions = document.getElementById("earOptions");
+        const earFeedback = document.getElementById("earFeedback");
+
+        earPlayBtn.addEventListener("click", () => {
+          if (isScalePlaying) stopScalePlayback();
+
+          const randomIdx = Math.floor(Math.random() * currentSequence.length);
+          earTargetNote = currentSequence[randomIdx];
+
+          audioEngine.playViolinNote(earTargetNote.midi, 0.85);
+          earRepeatBtn.disabled = false;
+          earFeedback.textContent = "איזה תו שמעת? בחר או נגן על הכינור:";
+          earFeedback.className = "text-xs font-bold text-amber-400 min-h-[18px]";
+
+          const uniqueSolfege = [...new Set(currentSequence.map((item) => item.displayLabel))];
+          earOptions.innerHTML = "";
+
+          uniqueSolfege.forEach((label) => {
+            const btn = document.createElement("button");
+            btn.textContent = label;
+            btn.className = "px-3 py-1.5 rounded-lg text-xs font-extrabold border transition inset-box hover:border-amber-500";
+
+            btn.addEventListener("click", () => {
+              if (!earTargetNote) return;
+              if (label === earTargetNote.displayLabel) {
+                earFeedback.textContent = `✅ מצוין! התו הוא ${earTargetNote.displayLabel} (${earTargetNote.stringName}, ${earTargetNote.finger})`;
+                earFeedback.className = "text-xs font-bold text-emerald-400 min-h-[18px]";
+                highlightFingerboardNote(earTargetNote.id);
+                updateLiveIllustration(earTargetNote, earTargetNote.displayLabel, "זיהוי שמיעה מוצלח!");
+                audioEngine.playViolinNote(earTargetNote.midi, 0.7);
+              } else {
+                earFeedback.textContent = `❌ בחרת ${label} — נסה להאזין שוב לצליל!`;
+                earFeedback.className = "text-xs font-bold text-rose-400 min-h-[18px]";
+              }
+            });
+
+            earOptions.appendChild(btn);
+          });
+        });
+
+        earRepeatBtn.addEventListener("click", () => {
+          if (earTargetNote) {
+            audioEngine.playViolinNote(earTargetNote.midi, 0.85);
+          }
+        });
+      }
+
+      /**
+       * ============================================================================
+       * 9. אתחול האפליקציה וחיבור אירועי הממשק
+       * ============================================================================
+       */
+      function updateBpm(newBpm) {
+        bpm = Math.min(180, Math.max(40, newBpm));
+        document.getElementById("bpmValue").textContent = bpm;
+        document.getElementById("bpmSlider").value = bpm;
+      }
+
+      function selectExercise(exKey) {
+        if (isScalePlaying) stopScalePlayback();
+        currentExerciseKey = exKey;
+        const ex = EXERCISES[exKey];
+
+        document.querySelectorAll(".ex-select-btn").forEach((btn) => {
+          if (btn.getAttribute("data-key") === exKey) {
+            btn.classList.add("bg-amber-600", "text-white", "border-amber-400", "shadow-md");
+          } else {
+            btn.classList.remove("bg-amber-600", "text-white", "border-amber-400", "shadow-md");
+          }
+        });
+
+        document.getElementById("scaleTheoryBadge").textContent = ex.badge;
+        document.getElementById("scaleDescription").textContent = ex.description;
+        document.getElementById("cycleCounter").textContent = "0";
+
+        earTargetNote = null;
+        document.getElementById("earRepeatBtn").disabled = true;
+        document.getElementById("earOptions").innerHTML =
+          '<span class="text-xs italic" style="color: var(--text-secondary);">לחץ על "השמע תו אקראי" להתחלה...</span>';
+        document.getElementById("earFeedback").textContent = "";
+
+        renderSheetMusic();
+        renderFingerboard();
+      }
+
+      function initApp() {
+        // 1. כפתורי בחירת סולם
+        const btnContainer = document.getElementById("exerciseButtons");
+        Object.values(EXERCISES).forEach((ex) => {
+          const btn = document.createElement("button");
+          btn.textContent = ex.title;
+          btn.setAttribute("data-key", ex.id);
+          btn.className = "ex-select-btn px-3 py-2.5 rounded-xl text-xs md:text-sm font-extrabold border transition text-center inset-box";
+          btn.addEventListener("click", () => selectExercise(ex.id));
+          btnContainer.appendChild(btn);
+        });
+
+        // 2. כפתור נגן / עצור סולם
+        document.getElementById("playStopBtn").addEventListener("click", () => {
+          if (isScalePlaying) stopScalePlayback();
+          else startScalePlayback();
+        });
+
+        // 3. מתג לופ רציף
+        const loopBtn = document.getElementById("loopToggleBtn");
+        const loopLed = document.getElementById("loopLed");
+        loopBtn.addEventListener("click", () => {
+          isLoopEnabled = !isLoopEnabled;
+          if (isLoopEnabled) {
+            loopBtn.classList.add("border-emerald-500/70", "text-emerald-400");
+            loopLed.classList.remove("bg-slate-500");
+            loopLed.classList.add("bg-emerald-400", "animate-pulse");
+          } else {
+            loopBtn.classList.remove("border-emerald-500/70", "text-emerald-400");
+            loopLed.classList.remove("bg-emerald-400", "animate-pulse");
+            loopLed.classList.add("bg-slate-500");
+          }
+        });
+
+        // 4. מתג ספירה מקדימה
+        const countInBtn = document.getElementById("countInToggleBtn");
+        const countInLed = document.getElementById("countInLed");
+        countInBtn.addEventListener("click", () => {
+          isCountInEnabled = !isCountInEnabled;
+          if (isCountInEnabled) {
+            countInBtn.classList.add("border-amber-500/60", "text-amber-400");
+            countInLed.classList.remove("bg-slate-500");
+            countInLed.classList.add("bg-amber-400");
+          } else {
+            countInBtn.classList.remove("border-amber-500/60", "text-amber-400");
+            countInLed.classList.remove("bg-amber-400");
+            countInLed.classList.add("bg-slate-500");
+          }
+        });
+
+        // 5. בחירת כיוון תנועה (עלייה וירידה / עלייה / ירידה)
+        document.querySelectorAll(".dir-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (isScalePlaying) stopScalePlayback();
+            directionMode = btn.getAttribute("data-dir");
+            document.querySelectorAll(".dir-btn").forEach((b) => {
+              b.classList.remove("bg-amber-600", "text-white");
+            });
+            btn.classList.add("bg-amber-600", "text-white");
+            renderSheetMusic();
+            renderFingerboard();
+          });
+        });
+
+        // 6. בקרת צליל עוגן (Drone)
+        const setDroneUI = (activeId, type) => {
+          document.querySelectorAll(".drone-sel-btn").forEach((b) => {
+            b.classList.remove("bg-amber-600", "text-white");
+          });
+          document.getElementById(activeId).classList.add("bg-amber-600", "text-white");
+          audioEngine.setDrone(type);
+        };
+        document.getElementById("droneOffBtn").addEventListener("click", () => setDroneUI("droneOffBtn", "off"));
+        document.getElementById("droneSolBtn").addEventListener("click", () => setDroneUI("droneSolBtn", "sol"));
+        document.getElementById("droneReBtn").addEventListener("click", () => setDroneUI("droneReBtn", "re"));
+
+        // 7. בקרת מטרונום (סליידר, +/- , Tap Tempo, כפתור הפעלה, חלוקת קצב)
+        document.getElementById("bpmSlider").addEventListener("input", (e) => updateBpm(parseInt(e.target.value, 10)));
+        document.getElementById("bpmMinusBtn").addEventListener("click", () => updateBpm(bpm - 2));
+        document.getElementById("bpmPlusBtn").addEventListener("click", () => updateBpm(bpm + 2));
+
+        let tapTimes = [];
+        document.getElementById("tapTempoBtn").addEventListener("click", () => {
+          const now = performance.now();
+          if (tapTimes.length > 0 && now - tapTimes[tapTimes.length - 1] > 2000) {
+            tapTimes = [];
+          }
+          tapTimes.push(now);
+          if (tapTimes.length > 4) tapTimes.shift();
+          if (tapTimes.length >= 2) {
+            const diffs = [];
+            for (let i = 1; i < tapTimes.length; i++) {
+              diffs.push(tapTimes[i] - tapTimes[i - 1]);
+            }
+            const avgMs = diffs.reduce((a, b) => a + b, 0) / diffs.length;
+            updateBpm(Math.round(60000 / avgMs));
+          }
+        });
+
+        const metroBtn = document.getElementById("metroToggleBtn");
+        const metroLed = document.getElementById("metroLed");
+        const metroBtnText = document.getElementById("metroBtnText");
+        metroBtn.addEventListener("click", () => {
+          isStandaloneMetroOn = !isStandaloneMetroOn;
+          if (isStandaloneMetroOn) {
+            audioEngine.init();
+            metroBtn.classList.add("border-amber-500", "text-amber-400");
+
+            metroLed.classList.remove("bg-slate-500");
+            metroLed.classList.add("bg-amber-400", "animate-pulse");
+            metroBtnText.textContent = "מטרונום פועל";
+            if (!isScalePlaying) startEngineLoop();
+          } else {
+            metroBtn.classList.remove("border-amber-500", "text-amber-400");
+            metroLed.classList.remove("bg-amber-400", "animate-pulse");
+            metroLed.classList.add("bg-slate-500");
+            metroBtnText.textContent = "הפעל מטרונום";
+            stopEngineLoopIfIdle();
+          }
+        });
+
+        document.getElementById("subdivisionSelect").addEventListener("change", (e) => {
+          subdivision = parseInt(e.target.value, 10);
+          renderSheetMusic();
+        });
+
+        // 8. כיוון תדר 440/442 הרץ וערכת נושא
+        document.getElementById("tuningToggle").addEventListener("click", () => {
+          audioEngine.a4Freq = audioEngine.a4Freq === 440 ? 442 : 440;
+          document.getElementById("tuningLabel").textContent = `לה = ${audioEngine.a4Freq} הרץ`;
+          audioEngine.updateDronePitch();
+        });
+
+        document.getElementById("themeToggle").addEventListener("click", () => {
+          document.body.classList.toggle("light-theme");
+        });
+
+        document.querySelectorAll(".lang-btn").forEach((btn) => {
+          btn.addEventListener("click", () => applyLanguage(btn.dataset.lang));
+        });
+
+        setupEarTraining();
+        selectExercise("g_major");
+      }
+
+      window.addEventListener("DOMContentLoaded", initApp);
+
+      /**
+       * ============================================================================
+       * תרגום והחלפת שפה
+       * ============================================================================
+       */
+      const I18N = {
+        he: {
+          title: "מעבדת אימון לכינור — סולפג' קבוע",
+          subtitle: "סולמות, ארפג'יו, מטרונום, נגינה בלופ ואילוסטרציה חיה (דו, רה, מי, פה, סול, לה, סי)",
+          tuning: "כיוון תזמורתי:",
+          theme: "ערכת צבע",
+          playScale: "נגן סולם",
+          stopScale: "עצור נגינה",
+          loop: "לופ רציף",
+          countIn: "ספירה מקדימה (4)",
+          tap: "הקש קצב",
+          metroRunning: "מטרונום פועל",
+          metroOn: "הפעל מטרונום",
+          earPlay: "השמע תו אקראי",
+          earRepeat: "שוב",
+        },
+        en: {
+          title: "Violin Practice Lab — Fixed Solfège",
+          subtitle: "Scales, Arpeggios, Metronome, Loop Playback, and Live Illustration (C, D, E, F, G, A, B)",
+          tuning: "Tuning:",
+          theme: "Color Theme",
+          playScale: "Play Scale",
+          stopScale: "Stop Scale",
+          loop: "Continuous Loop",
+          countIn: "Count-in (4)",
+          tap: "Tap Tempo",
+          metroRunning: "Metronome Running",
+          metroOn: "Turn On Metronome",
+          earPlay: "Play Random Note",
+          earRepeat: "Repeat",
+        },
+        ru: {
+          title: "Лаборатория практики скрипки — Фиксированная сольфеджио",
+          subtitle: "Масштабы, арпеджио, метроном, воспроизведение в петле и живая иллюстрация (До, Ре, Ми, Фа, Соль, Ля, Си)",
+          tuning: "Настройка:",
+          theme: "Цветовая тема",
+          playScale: "Играть масштаб",
+          stopScale: "Остановить игру",
+          loop: "Непрерывная петля",
+          countIn: "Счет (4)",
+          tap: "Темп нажатия",
+          metroRunning: "Метроном работает",
+          metroOn: "Включить метроном",
+          earPlay: "Играть случайную ноту",
+          earRepeat: "Повторить",
+        },
+      };
+
+      function setText(elementId, text) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.textContent = text;
+        }
+      }
+
+      function applyLanguage(lang) {
+        currentLanguage = lang;
+        document.documentElement.lang = lang;
+        document.body.dir = lang === "he" ? "rtl" : "ltr";
+        const t = I18N[lang];
+
+        document.querySelectorAll(".lang-btn").forEach((btn) => btn.classList.toggle("active", btn.dataset.lang === lang));
+        document.querySelector("h1").textContent = t.title;
+        const subtitle = document.querySelector("header p");
+        if (subtitle) subtitle.textContent = t.subtitle;
+
+        const tuningToggle = document.getElementById("tuningToggle");
+        if (tuningToggle)
+          tuningToggle.innerHTML = `<span>🎵 ${t.tuning}</span><span id="tuningLabel" class="text-amber-400">${
+            lang === "he" ? "לה" : lang === "ru" ? "ля" : "A"
+          } = ${audioEngine.a4Freq} Hz</span>`;
+        setText("themeToggle", `🌓 ${t.theme}`);
+        setText("playText", isScalePlaying ? t.stopScale : t.playScale);
+        setText("loopText", t.loop);
+        setText("countInText", t.countIn);
+
+        setText("tapTempoBtn", `👆 ${t.tap}`);
+        setText("metroBtnText", isStandaloneMetroOn ? t.metroRunning : t.metroOn);
+        setText("earPlayBtn", `🔊 ${t.earPlay}`);
+        setText("earRepeatBtn", `🔁 ${t.earRepeat}`);
+
+        const exerciseNames = {
+          he: null,
+          en: ["G Major", "G Natural Minor", "G Harmonic Minor", "G Melodic Minor", "G Major Arpeggio", "G Minor Arpeggio"],
+          ru: [
+            "Соль мажор",
+            "Соль натуральный минор",
+            "Соль гармонический минор",
+            "Соль мелодический минор",
+            "Арпеджио соль мажор",
+            "Арпеджио соль минор",
+          ],
+        };
+        if (exerciseNames[lang]) {
+          document.querySelectorAll(".ex-select-btn").forEach((btn, i) => {
+            if (lang === "he") {
+              btn.textContent = EXERCISES[btn.dataset.key].title;
+            } else if (exerciseNames[lang]) {
+              btn.textContent = exerciseNames[lang][i];
+            }
+          });
+        }
+
+        renderSheetMusic();
+        renderFingerboard();
+        selectExercise(currentExerciseKey);
+      }
+
+      document.querySelectorAll(".lang-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const lang = btn.dataset.lang;
+          applyLanguage(lang);
+        });
+      });
+
+      applyLanguage(currentLanguage);
     </script>
-</body>
+  </body>
 </html>
