@@ -502,28 +502,29 @@
           this.droneType = "off"; // 'off' | 'sol' | 're'
           this.sampleCache = new Map();
           this.sampleLoads = new Map();
-          this.samplePaths = {
-            55: "G3.mp3",
-            57: "A3.mp3",
-            58: "A3.mp3",
-            59: "B3.mp3",
-            60: "C4.mp3",
-            62: "D4.mp3",
-            63: "D4.mp3",
-            64: "E4.mp3",
-            65: "F4.mp3",
-            66: "F4.mp3",
-            67: "G4.mp3",
-            69: "A4.mp3",
-            70: "A4.mp3",
-            71: "B5.mp3",
-            72: "C5.mp3",
-            74: "D5.mp3",
-            76: "E5.mp3",
-            77: "F5.mp3",
-            78: "F5.mp3",
-            79: "G5.mp3",
-          };
+          // Measured sample fundamentals let playback correct tuning and filename mismatches.
+          this.violinSamples = [
+            { midi: 55, fileName: "G3.mp3", frequency: 196.712 },
+            { midi: 57, fileName: "A3.mp3", frequency: 220.601 },
+            { midi: 59, fileName: "B3.mp3", frequency: 248.082 },
+            { midi: 60, fileName: "C4.mp3", frequency: 263.478 },
+            { midi: 62, fileName: "D4.mp3", frequency: 295.521 },
+            { midi: 64, fileName: "E4.mp3", frequency: 331.140 },
+            { midi: 65, fileName: "F4.mp3", frequency: 350.991 },
+            { midi: 67, fileName: "G4.mp3", frequency: 391.520 },
+            { midi: 69, fileName: "A4.mp3", frequency: 440.649 },
+            { midi: 72, fileName: "C5.mp3", frequency: 525.191 },
+            { midi: 74, fileName: "D5.mp3", frequency: 589.524 },
+            { midi: 76, fileName: "E5.mp3", frequency: 661.684 },
+            { midi: 77, fileName: "F5.mp3", frequency: 699.969 },
+            { midi: 80, fileName: "G5.mp3", frequency: 830.893 }, // This recording's root is G#5.
+            { midi: 81, fileName: "A5.mp3", frequency: 882.328 },
+            { midi: 83, fileName: "B5.mp3", frequency: 987.188 },
+            { midi: 84, fileName: "C6.mp3", frequency: 1052.869 },
+            { midi: 86, fileName: "D6.mp3", frequency: 1178.074 },
+            { midi: 88, fileName: "E6.mp3", frequency: 1325.536 },
+            { midi: 91, fileName: "G6.mp3", frequency: 1573.586 },
+          ];
         }
 
         init() {
@@ -538,6 +539,12 @@
 
         midiToFreq(midi) {
           return this.a4Freq * Math.pow(2, (midi - 69) / 12);
+        }
+
+        getClosestViolinSample(midi) {
+          return this.violinSamples.reduce((closest, sample) =>
+            Math.abs(sample.midi - midi) < Math.abs(closest.midi - midi) ? sample : closest
+          );
         }
 
         loadViolinSample(fileName) {
@@ -565,31 +572,17 @@
         }
 
         async preloadViolinNotes(midis) {
-          const available = Object.keys(this.samplePaths).map(Number);
-          const fileNames = new Set(
-            midis.map((midi) => {
-              const sourceMidi = available.reduce((best, candidate) =>
-                Math.abs(candidate - midi) < Math.abs(best - midi) ? candidate : best
-              );
-              return this.samplePaths[sourceMidi];
-            })
-          );
+          const fileNames = new Set(midis.map((midi) => this.getClosestViolinSample(midi).fileName));
           await Promise.all([...fileNames].map((fileName) => this.loadViolinSample(fileName)));
         }
 
         // Play a real bowed-violin recording. Near pitches are transposed by a small playback-rate adjustment.
         async playViolinNote(midi, durationSec = 0.6, startTimeOffset = 0) {
           this.init();
-          const targetMidi = midi;
-
-          const available = Object.keys(this.samplePaths).map(Number);
-          let sourceMidi = available.reduce((best, candidate) => (Math.abs(candidate - targetMidi) < Math.abs(best - targetMidi) ? candidate : best));
-
-          const fileName = this.samplePaths[sourceMidi];
-          if (!fileName) return;
+          const sample = this.getClosestViolinSample(midi);
 
           try {
-            const buffer = await this.loadViolinSample(fileName);
+            const buffer = await this.loadViolinSample(sample.fileName);
             const now = this.ctx.currentTime + startTimeOffset;
             const noteEnd = now + durationSec + 0.04;
             const attackSec = Math.min(0.025, durationSec * 0.2);
@@ -599,7 +592,7 @@
             const gain = this.ctx.createGain();
             const filter = this.ctx.createBiquadFilter();
             source.buffer = buffer;
-            source.playbackRate.setValueAtTime(Math.pow(2, (targetMidi - sourceMidi) / 12), now);
+            source.playbackRate.setValueAtTime(this.midiToFreq(midi) / sample.frequency, now);
             filter.type = "lowpass";
             filter.frequency.value = 9000;
             gain.gain.setValueAtTime(0.001, now);
@@ -740,6 +733,7 @@
         { id: "LA1H", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 1", semitone: 2, midi: 71, solfege: "סי", abc: "B" },
         { id: "LA2L", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 2 נמוכה", semitone: 3, midi: 72, solfege: "דו", abc: "c" },
         { id: "LA3", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 3", semitone: 5, midi: 74, solfege: "רה", abc: "d" },
+        { id: "LA4", stringIdx: 2, stringName: "מיתר לה", finger: "אצבע 4", semitone: 6, midi: 75, solfege: "מי♭", abc: "_e" },
 
         // מיתר מי (אינדקס 3)
         { id: "MI0", stringIdx: 3, stringName: "מיתר מי", finger: "0 (פתוח)", semitone: 0, midi: 76, solfege: "מי", abc: "e" },
@@ -820,8 +814,8 @@
           badge: "סימני מפתח: סי♭, מי♭",
           description:
             "סולם סול מינור טבעי: הדרגות 3 (סי♭), 6 (מי♭) ו-7 (פה) מונמכות. אצבע 1 נמוכה על מיתרי רה ולה, ואצבע 2 נמוכה צמודה ל-1 על מיתר סול.",
-          up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1L", "RE2L", "RE3", "LA0", "LA1L", "LA2L", "LA3", "MI0", "MI1L", "MI2L"],
-          down: ["MI2L", "MI1L", "MI0", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2L", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
+          up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1L", "RE2L", "RE3", "LA0", "LA1L", "LA2L", "LA3", "LA4", "MI1L", "MI2L"],
+          down: ["MI2L", "MI1L", "LA4", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2L", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
           customLabelsUp: {},
           customLabelsDown: {},
         },
@@ -831,8 +825,8 @@
           badge: "סי♭, מי♭ + פה♯ מוגבה",
           description:
             "סולם סול מינור הרמוני: הדרגה השביעית מוגבהת ל-פה♯ ליצירת מתח המוביל לסול. נוצרת מתיחה של טון וחצי בין מי♭ (אצבע 1 נמוכה) ל-פה♯ (אצבע 2 גבוהה).",
-          up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1L", "RE2H", "RE3", "LA0", "LA1L", "LA2L", "LA3", "MI0", "MI1H", "MI2L"],
-          down: ["MI2L", "MI1H", "MI0", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2H", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
+          up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1L", "RE2H", "RE3", "LA0", "LA1L", "LA2L", "LA3", "LA4", "MI1H", "MI2L"],
+          down: ["MI2L", "MI1H", "LA4", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2H", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
           customLabelsUp: {},
           customLabelsDown: {},
         },
@@ -843,7 +837,7 @@
           description:
             "סולם סול מינור מלודי: בעלייה מגביהים את הדרגה ה-6 (מי בקר) וה-7 (פה♯) למלודיה זורמת, ובירידה מחזירים אותן למצב הטבעי (פה בקר ו-מי♭).",
           up: ["SOL0", "SOL1", "SOL2L", "SOL3", "RE0", "RE1H", "RE2H", "RE3", "LA0", "LA1L", "LA2L", "LA3", "MI0", "MI1H", "MI2L"],
-          down: ["MI2L", "MI1L", "MI0", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2L", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
+          down: ["MI2L", "MI1L", "LA4", "LA3", "LA2L", "LA1L", "LA0", "RE3", "RE2L", "RE1L", "RE0", "SOL3", "SOL2L", "SOL1", "SOL0"],
           customLabelsUp: { RE1H: "מי♮", MI0: "מי♮" },
           customLabelsDown: { MI1L: "פה♮", RE2L: "פה♮" },
         },
@@ -1011,6 +1005,7 @@
           3: 475,
           4: 605,
           5: 735,
+          6: 805,
         };
 
         const stringsInfo = [
@@ -1034,6 +1029,7 @@
           { semi: 3, label: "אצבע 2 נמוכה" },
           { semi: 4, label: "אצבע 2 גבוהה" },
           { semi: 5, label: "אצבע 3" },
+          { semi: 6, label: "אצבע 4" },
         ];
 
         fretLabels.forEach((f) => {
