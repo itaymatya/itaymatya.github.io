@@ -502,6 +502,7 @@
           this.droneType = "off"; // 'off' | 'sol' | 're'
           this.sampleCache = new Map();
           this.sampleLoads = new Map();
+          this.sampleGains = new Map();
           // Measured sample fundamentals let playback correct tuning and filename mismatches.
           this.violinSamples = [
             { midi: 55, fileName: "G3.mp3", frequency: 196.712 },
@@ -547,6 +548,32 @@
           );
         }
 
+        getSampleNormalizationGain(buffer) {
+          const startFrame = Math.floor(buffer.sampleRate * 0.12);
+          const endFrame = Math.min(buffer.length, Math.floor(buffer.sampleRate * 0.42));
+          let sumSquares = 0;
+          let sampleCount = 0;
+          let peak = 0;
+
+          for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+            const samples = buffer.getChannelData(channel);
+            for (let frame = 0; frame < samples.length; frame++) {
+              const amplitude = Math.abs(samples[frame]);
+              peak = Math.max(peak, amplitude);
+              if (frame >= startFrame && frame < endFrame) {
+                sumSquares += amplitude * amplitude;
+                sampleCount++;
+              }
+            }
+          }
+
+          if (sampleCount === 0 || peak === 0) throw new Error("Cannot normalize a silent violin sample.");
+
+          const targetRms = 0.032;
+          const measuredRms = Math.sqrt(sumSquares / sampleCount);
+          return Math.min(targetRms / measuredRms, 0.95 / (0.72 * peak));
+        }
+
         loadViolinSample(fileName) {
           if (this.sampleCache.has(fileName)) return Promise.resolve(this.sampleCache.get(fileName));
           if (this.sampleLoads.has(fileName)) return this.sampleLoads.get(fileName);
@@ -558,6 +585,7 @@
             })
             .then((data) => this.ctx.decodeAudioData(data))
             .then((buffer) => {
+              this.sampleGains.set(fileName, this.getSampleNormalizationGain(buffer));
               this.sampleCache.set(fileName, buffer);
               this.sampleLoads.delete(fileName);
               return buffer;
@@ -583,6 +611,8 @@
 
           try {
             const buffer = await this.loadViolinSample(sample.fileName);
+            const sampleGain = this.sampleGains.get(sample.fileName);
+            if (sampleGain === undefined) throw new Error(`Missing gain calibration for violin sample: ${sample.fileName}`);
             const now = this.ctx.currentTime + startTimeOffset;
             const noteEnd = now + durationSec + 0.04;
             const attackSec = Math.min(0.025, durationSec * 0.2);
@@ -595,9 +625,9 @@
             source.playbackRate.setValueAtTime(this.midiToFreq(midi) / sample.frequency, now);
             filter.type = "lowpass";
             filter.frequency.value = 9000;
-            gain.gain.setValueAtTime(0.001, now);
-            gain.gain.linearRampToValueAtTime(0.72, now + attackSec);
-            gain.gain.setValueAtTime(0.62, Math.max(now + attackSec, noteEnd - releaseSec));
+            gain.gain.setValueAtTime(0.001 * sampleGain, now);
+            gain.gain.linearRampToValueAtTime(0.72 * sampleGain, now + attackSec);
+            gain.gain.setValueAtTime(0.62 * sampleGain, Math.max(now + attackSec, noteEnd - releaseSec));
             gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
             source.connect(filter);
             filter.connect(gain);
