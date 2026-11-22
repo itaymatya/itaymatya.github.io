@@ -1,0 +1,8 @@
+Salamander Grand Piano V3
+Author: Alexander Holm
+License: Creative Commons Attribution 3.0 (CC BY 3.0)
+License URL: https://creativecommons.org/licenses/by/3.0/
+Original collection: https://archive.org/details/SalamanderGrandPianoV3
+MP3 sample source: https://github.com/Tonejs/audio/tree/master/salamander
+
+This site redistributes a selected set of the Tone.js-hosted MP3 samples for web playback.
