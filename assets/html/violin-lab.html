@@ -267,6 +267,26 @@
               <span id="playText">נגן סולם</span>
             </button>
 
+            <button
+              id="instrumentToggle"
+              type="button"
+              aria-pressed="false"
+              class="px-4 py-3 rounded-xl font-bold border transition flex items-center gap-2 text-xs md:text-sm inset-box"
+            >
+              <span id="instrumentIcon">🎻</span>
+              <span id="instrumentText">צליל: כינור</span>
+            </button>
+
+            <p class="basis-full text-[10px]" style="color: var(--text-secondary)">
+              <span id="pianoCreditPrefix">דגימות פסנתר:</span>
+              <a href="https://archive.org/details/SalamanderGrandPianoV3" target="_blank" rel="noopener noreferrer" class="underline">
+                Salamander Grand Piano V3
+              </a>
+              <span id="pianoCreditBy">מאת Alexander Holm ·</span>
+              <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="underline">CC BY 3.0</a>
+              <span id="pianoCreditSource">(דגימות MP3 דרך Tone.js)</span>
+            </p>
+
             <!-- מתג לופ רציף -->
             <button id="loopToggleBtn" class="px-4 py-3 rounded-xl font-bold border transition flex items-center gap-2 text-xs md:text-sm inset-box">
               <span id="loopLed" class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
@@ -498,11 +518,27 @@
         constructor() {
           this.ctx = null;
           this.a4Freq = 440; // לה = 440Hz או 442Hz
+          this.instrumentMode = "violin";
           this.droneNodes = null;
           this.droneType = "off"; // 'off' | 'sol' | 're'
           this.sampleCache = new Map();
           this.sampleLoads = new Map();
           this.sampleGains = new Map();
+          this.pianoSampleCache = new Map();
+          this.pianoSampleLoads = new Map();
+          this.pianoSampleGains = new Map();
+          // Measured piano fundamentals correct the small tuning offsets in the recordings.
+          this.pianoSamples = [
+            { midi: 54, fileName: "Fs3.mp3", frequency: 184.28 },
+            { midi: 57, fileName: "A3.mp3", frequency: 220.07 },
+            { midi: 60, fileName: "C4.mp3", frequency: 261.05 },
+            { midi: 63, fileName: "Ds4.mp3", frequency: 311.17 },
+            { midi: 66, fileName: "Fs4.mp3", frequency: 369.4 },
+            { midi: 69, fileName: "A4.mp3", frequency: 440.2 },
+            { midi: 72, fileName: "C5.mp3", frequency: 524.16 },
+            { midi: 75, fileName: "Ds5.mp3", frequency: 623.7 },
+            { midi: 78, fileName: "Fs5.mp3", frequency: 741.9 },
+          ];
           // Measured sample fundamentals let playback correct tuning and filename mismatches.
           this.violinSamples = [
             { midi: 55, fileName: "G3.mp3", frequency: 196.712 },
@@ -510,9 +546,9 @@
             { midi: 59, fileName: "B3.mp3", frequency: 248.082 },
             { midi: 60, fileName: "C4.mp3", frequency: 263.478 },
             { midi: 62, fileName: "D4.mp3", frequency: 295.521 },
-            { midi: 64, fileName: "E4.mp3", frequency: 331.140 },
+            { midi: 64, fileName: "E4.mp3", frequency: 331.14 },
             { midi: 65, fileName: "F4.mp3", frequency: 350.991 },
-            { midi: 67, fileName: "G4.mp3", frequency: 391.520 },
+            { midi: 67, fileName: "G4.mp3", frequency: 391.52 },
             { midi: 69, fileName: "A4.mp3", frequency: 440.649 },
             { midi: 72, fileName: "C5.mp3", frequency: 525.191 },
             { midi: 74, fileName: "D5.mp3", frequency: 589.524 },
@@ -543,9 +579,7 @@
         }
 
         getClosestViolinSample(midi) {
-          return this.violinSamples.reduce((closest, sample) =>
-            Math.abs(sample.midi - midi) < Math.abs(closest.midi - midi) ? sample : closest
-          );
+          return this.violinSamples.reduce((closest, sample) => (Math.abs(sample.midi - midi) < Math.abs(closest.midi - midi) ? sample : closest));
         }
 
         getSampleNormalizationGain(buffer) {
@@ -604,19 +638,67 @@
           await Promise.all([...fileNames].map((fileName) => this.loadViolinSample(fileName)));
         }
 
+        getClosestPianoSample(midi) {
+          return this.pianoSamples.reduce((closest, sample) => (Math.abs(sample.midi - midi) < Math.abs(closest.midi - midi) ? sample : closest));
+        }
+
+        getPianoSampleNormalizationGain(buffer) {
+          let peak = 0;
+          for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+            const samples = buffer.getChannelData(channel);
+            for (let frame = 0; frame < samples.length; frame++) {
+              peak = Math.max(peak, Math.abs(samples[frame]));
+            }
+          }
+
+          if (peak === 0) throw new Error("Cannot normalize a silent piano sample.");
+          return Math.min(0.75 / peak, 2);
+        }
+
+        loadPianoSample(fileName) {
+          if (this.pianoSampleCache.has(fileName)) return Promise.resolve(this.pianoSampleCache.get(fileName));
+          if (this.pianoSampleLoads.has(fileName)) return this.pianoSampleLoads.get(fileName);
+
+          const sampleLoad = fetch(`../audio/grand-piano/${fileName}`)
+            .then((response) => {
+              if (!response.ok) throw new Error(`Piano sample unavailable: ${fileName}`);
+              return response.arrayBuffer();
+            })
+            .then((data) => this.ctx.decodeAudioData(data))
+            .then((buffer) => {
+              this.pianoSampleGains.set(fileName, this.getPianoSampleNormalizationGain(buffer));
+              this.pianoSampleCache.set(fileName, buffer);
+              this.pianoSampleLoads.delete(fileName);
+              return buffer;
+            })
+            .catch((error) => {
+              this.pianoSampleLoads.delete(fileName);
+              throw error;
+            });
+
+          this.pianoSampleLoads.set(fileName, sampleLoad);
+          return sampleLoad;
+        }
+
+        async preloadPianoNotes(midis) {
+          const fileNames = new Set(midis.map((midi) => this.getClosestPianoSample(midi).fileName));
+          await Promise.all([...fileNames].map((fileName) => this.loadPianoSample(fileName)));
+        }
+
         // Play a real bowed-violin recording. Near pitches are transposed by a small playback-rate adjustment.
         async playViolinNote(midi, durationSec = 0.6, startTimeOffset = 0) {
           this.init();
           const sample = this.getClosestViolinSample(midi);
 
           try {
-            const buffer = await this.loadViolinSample(sample.fileName);
+            const buffer = this.sampleCache.get(sample.fileName) || (await this.loadViolinSample(sample.fileName));
             const sampleGain = this.sampleGains.get(sample.fileName);
             if (sampleGain === undefined) throw new Error(`Missing gain calibration for violin sample: ${sample.fileName}`);
             const now = this.ctx.currentTime + startTimeOffset;
-            const noteEnd = now + durationSec + 0.04;
-            const attackSec = Math.min(0.025, durationSec * 0.2);
-            const releaseSec = Math.min(0.08, durationSec * 0.35);
+            const releaseSec = Math.min(0.18, Math.max(0.12, durationSec * 0.28));
+            const releaseStart = now + durationSec;
+            const noteEnd = releaseStart + releaseSec;
+            const attackSec = Math.min(0.04, durationSec * 0.24);
 
             const source = this.ctx.createBufferSource();
             const gain = this.ctx.createGain();
@@ -627,22 +709,59 @@
             filter.frequency.value = 9000;
             gain.gain.setValueAtTime(0.001 * sampleGain, now);
             gain.gain.linearRampToValueAtTime(0.72 * sampleGain, now + attackSec);
-            gain.gain.setValueAtTime(0.62 * sampleGain, Math.max(now + attackSec, noteEnd - releaseSec));
+            gain.gain.setValueAtTime(0.62 * sampleGain, Math.max(now + attackSec, releaseStart));
             gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
             source.connect(filter);
             filter.connect(gain);
             gain.connect(this.ctx.destination);
             source.start(now);
-            source.stop(noteEnd);
+            source.stop(noteEnd + 0.01);
           } catch (error) {
             console.warn(error);
           }
         }
 
-        // נקישת מטרונום חדה (פעמה 1 מודגשת גבוהה, פעמות 2-4 רכות יותר, שמיניות עדינות)
-        playMetronomeClick(beatType = "regular") {
+        async playPianoNote(midi, durationSec = 0.6, startTimeOffset = 0) {
           this.init();
-          const now = this.ctx.currentTime;
+          const sample = this.getClosestPianoSample(midi);
+
+          try {
+            const buffer = this.pianoSampleCache.get(sample.fileName) || (await this.loadPianoSample(sample.fileName));
+            const sampleGain = this.pianoSampleGains.get(sample.fileName);
+            if (sampleGain === undefined) throw new Error(`Missing gain calibration for piano sample: ${sample.fileName}`);
+            const now = this.ctx.currentTime + startTimeOffset;
+            const releaseStart = now + durationSec;
+            const releaseSec = Math.min(0.16, Math.max(0.1, durationSec * 0.24));
+            const noteEnd = releaseStart + releaseSec;
+            const attackSec = Math.min(0.008, durationSec * 0.1);
+            const source = this.ctx.createBufferSource();
+            const gain = this.ctx.createGain();
+            source.buffer = buffer;
+            source.playbackRate.setValueAtTime(this.midiToFreq(midi) / sample.frequency, now);
+            gain.gain.setValueAtTime(0.0001, now);
+            gain.gain.linearRampToValueAtTime(0.72 * sampleGain, now + attackSec);
+            gain.gain.setValueAtTime(0.62 * sampleGain, Math.max(now + attackSec, releaseStart));
+            gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+            source.connect(gain);
+            gain.connect(this.ctx.destination);
+            source.start(now);
+            source.stop(noteEnd + 0.01);
+          } catch (error) {
+            console.warn(error);
+          }
+        }
+
+        playNote(midi, durationSec = 0.6, startTimeOffset = 0) {
+          if (this.instrumentMode === "piano") {
+            return this.playPianoNote(midi, durationSec, startTimeOffset);
+          }
+          return this.playViolinNote(midi, durationSec, startTimeOffset);
+        }
+
+        // נקישת מטרונום חדה (פעמה 1 מודגשת גבוהה, פעמות 2-4 רכות יותר, שמיניות עדינות)
+        playMetronomeClick(beatType = "regular", startTimeOffset = 0) {
+          this.init();
+          const now = this.ctx.currentTime + startTimeOffset;
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
 
@@ -917,6 +1036,7 @@
       let cycleCount = 0;
       let globalTickCounter = 0; // סופר צעדים לסנכרון נוריות מטרונום
       let schedulerTimer = null;
+      let nextEngineAudioTime = 0;
 
       // בניית רצף התווים בהתאם לכיוון הנבחר (עלייה וירידה / עלייה / ירידה)
       function buildExerciseSequence(exKey, dirMode) {
@@ -1118,7 +1238,7 @@
             const posId = el.getAttribute("data-pos-id");
             const posObj = POS_MAP[posId];
             if (posObj) {
-              audioEngine.playViolinNote(posObj.midi, 0.7);
+              audioEngine.playNote(posObj.midi, 0.7);
               highlightFingerboardNote(posId);
               updateLiveIllustration(posObj, posObj.solfege, "לחיצה ידנית");
               setTimeout(() => {
@@ -1212,6 +1332,7 @@
       function startEngineLoop() {
         clearTimeout(schedulerTimer);
         globalTickCounter = 0;
+        nextEngineAudioTime = audioEngine.ctx.currentTime + 0.05;
         runEngineTick();
       }
 
@@ -1228,6 +1349,10 @@
         if (!isScalePlaying && !isStandaloneMetroOn) return;
 
         const stepMs = getStepIntervalMs();
+        const audioNow = audioEngine.ctx.currentTime;
+        if (nextEngineAudioTime < audioNow - 0.02) nextEngineAudioTime = audioNow + 0.03;
+        const tickAudioTime = nextEngineAudioTime;
+        const audioStartOffset = Math.max(0, tickAudioTime - audioNow);
         const isMainBeat = subdivision === 1 || globalTickCounter % 2 === 0;
         const beatNumberInBar = subdivision === 1 ? globalTickCounter % 4 : Math.floor(globalTickCounter / 2) % 4;
 
@@ -1236,10 +1361,10 @@
           const isAccent = beatNumberInBar === 0;
           flashMetronomeLed(beatNumberInBar, isAccent);
           if (isStandaloneMetroOn || (isScalePlaying && countInRemaining > 0)) {
-            audioEngine.playMetronomeClick(isAccent ? "accent" : "regular");
+            audioEngine.playMetronomeClick(isAccent ? "accent" : "regular", audioStartOffset);
           }
         } else if (isStandaloneMetroOn) {
-          audioEngine.playMetronomeClick("sub");
+          audioEngine.playMetronomeClick("sub", audioStartOffset);
         }
 
         // 2. לוגיקת נגינת סולם (ספירה מקדימה -> נגינת תווים -> לופ או עצירה)
@@ -1270,7 +1395,7 @@
               const item = currentSequence[playStepIndex];
               const noteDurationSec = stepMs / 1000;
 
-              audioEngine.playViolinNote(item.midi, noteDurationSec);
+              audioEngine.playNote(item.midi, noteDurationSec, audioStartOffset);
               highlightSheetNote(playStepIndex);
               highlightFingerboardNote(item.id);
               updateLiveIllustration(item, item.displayLabel, `תו ${playStepIndex + 1} מתוך ${currentSequence.length}`, item.direction);
@@ -1281,6 +1406,7 @@
         }
 
         globalTickCounter++;
+        nextEngineAudioTime = tickAudioTime + stepMs / 1000;
         schedulerTimer = setTimeout(runEngineTick, stepMs);
       }
 
@@ -1295,13 +1421,16 @@
         document.getElementById("playIcon").textContent = "⏹";
         document.getElementById("playText").textContent = "עצור נגינה";
 
+        const instrumentMode = audioEngine.instrumentMode;
         try {
-          await audioEngine.preloadViolinNotes(currentSequence.map((item) => item.midi));
+          const notes = currentSequence.map((item) => item.midi);
+          if (instrumentMode === "violin") await audioEngine.preloadViolinNotes(notes);
+          else await audioEngine.preloadPianoNotes(notes);
         } catch (error) {
           if (playbackRequest !== scalePlaybackRequest) return;
           console.error(error);
           stopScalePlayback();
-          window.alert("Unable to load violin samples. Please check your connection and try again.");
+          window.alert(`Unable to load ${instrumentMode} samples. Please check your connection and try again.`);
           return;
         }
 
@@ -1351,7 +1480,7 @@
           const randomIdx = Math.floor(Math.random() * currentSequence.length);
           earTargetNote = currentSequence[randomIdx];
 
-          audioEngine.playViolinNote(earTargetNote.midi, 0.85);
+          audioEngine.playNote(earTargetNote.midi, 0.85);
           earRepeatBtn.disabled = false;
           earFeedback.textContent = "איזה תו שמעת? בחר או נגן על הכינור:";
           earFeedback.className = "text-xs font-bold text-amber-400 min-h-[18px]";
@@ -1371,7 +1500,7 @@
                 earFeedback.className = "text-xs font-bold text-emerald-400 min-h-[18px]";
                 highlightFingerboardNote(earTargetNote.id);
                 updateLiveIllustration(earTargetNote, earTargetNote.displayLabel, "זיהוי שמיעה מוצלח!");
-                audioEngine.playViolinNote(earTargetNote.midi, 0.7);
+                audioEngine.playNote(earTargetNote.midi, 0.7);
               } else {
                 earFeedback.textContent = `❌ בחרת ${label} — נסה להאזין שוב לצליל!`;
                 earFeedback.className = "text-xs font-bold text-rose-400 min-h-[18px]";
@@ -1384,7 +1513,7 @@
 
         earRepeatBtn.addEventListener("click", () => {
           if (earTargetNote) {
-            audioEngine.playViolinNote(earTargetNote.midi, 0.85);
+            audioEngine.playNote(earTargetNote.midi, 0.85);
           }
         });
       }
@@ -1443,6 +1572,11 @@
         document.getElementById("playStopBtn").addEventListener("click", () => {
           if (isScalePlaying) stopScalePlayback();
           else startScalePlayback();
+        });
+
+        document.getElementById("instrumentToggle").addEventListener("click", () => {
+          audioEngine.instrumentMode = audioEngine.instrumentMode === "violin" ? "piano" : "violin";
+          updateInstrumentToggle();
         });
 
         // 3. מתג לופ רציף
@@ -1585,6 +1719,12 @@
           subtitle: "סולמות, ארפג'יו, מטרונום, נגינה בלופ ואילוסטרציה חיה (דו, רה, מי, פה, סול, לה, סי)",
           tuning: "כיוון תזמורתי:",
           theme: "ערכת צבע",
+          instrument: "צליל",
+          violin: "כינור",
+          piano: "פסנתר",
+          pianoCreditPrefix: "דגימות פסנתר:",
+          pianoCreditBy: "מאת Alexander Holm ·",
+          pianoCreditSource: "(דגימות MP3 דרך Tone.js)",
           playScale: "נגן סולם",
           stopScale: "עצור נגינה",
           loop: "לופ רציף",
@@ -1600,6 +1740,12 @@
           subtitle: "Scales, Arpeggios, Metronome, Loop Playback, and Live Illustration (C, D, E, F, G, A, B)",
           tuning: "Tuning:",
           theme: "Color Theme",
+          instrument: "Sound",
+          violin: "Violin",
+          piano: "Piano",
+          pianoCreditPrefix: "Piano samples:",
+          pianoCreditBy: "by Alexander Holm ·",
+          pianoCreditSource: "(MP3 samples via Tone.js)",
           playScale: "Play Scale",
           stopScale: "Stop Scale",
           loop: "Continuous Loop",
@@ -1615,6 +1761,12 @@
           subtitle: "Масштабы, арпеджио, метроном, воспроизведение в петле и живая иллюстрация (До, Ре, Ми, Фа, Соль, Ля, Си)",
           tuning: "Настройка:",
           theme: "Цветовая тема",
+          instrument: "Звук",
+          violin: "Скрипка",
+          piano: "Пианино",
+          pianoCreditPrefix: "Сэмплы рояля:",
+          pianoCreditBy: "Alexander Holm ·",
+          pianoCreditSource: "(MP3-сэмплы через Tone.js)",
           playScale: "Играть масштаб",
           stopScale: "Остановить игру",
           loop: "Непрерывная петля",
@@ -1634,6 +1786,14 @@
         }
       }
 
+      function updateInstrumentToggle() {
+        const isPiano = audioEngine.instrumentMode === "piano";
+        const t = I18N[currentLanguage];
+        setText("instrumentIcon", isPiano ? "🎹" : "🎻");
+        setText("instrumentText", `${t.instrument}: ${isPiano ? t.piano : t.violin}`);
+        document.getElementById("instrumentToggle").setAttribute("aria-pressed", String(isPiano));
+      }
+
       function applyLanguage(lang) {
         currentLanguage = lang;
         document.documentElement.lang = lang;
@@ -1651,6 +1811,7 @@
             lang === "he" ? "לה" : lang === "ru" ? "ля" : "A"
           } = ${audioEngine.a4Freq} Hz</span>`;
         setText("themeToggle", `🌓 ${t.theme}`);
+        updateInstrumentToggle();
         setText("playText", isScalePlaying ? t.stopScale : t.playScale);
         setText("loopText", t.loop);
         setText("countInText", t.countIn);
@@ -1659,9 +1820,11 @@
         setText("metroBtnText", isStandaloneMetroOn ? t.metroRunning : t.metroOn);
         setText("earPlayBtn", `🔊 ${t.earPlay}`);
         setText("earRepeatBtn", `🔁 ${t.earRepeat}`);
+        setText("pianoCreditPrefix", t.pianoCreditPrefix);
+        setText("pianoCreditBy", t.pianoCreditBy);
+        setText("pianoCreditSource", t.pianoCreditSource);
 
         const exerciseNames = {
-          he: null,
           en: ["G Major", "G Natural Minor", "G Harmonic Minor", "G Melodic Minor", "G Major Arpeggio", "G Minor Arpeggio"],
           ru: [
             "Соль мажор",
@@ -1672,15 +1835,9 @@
             "Арпеджио соль минор",
           ],
         };
-        if (exerciseNames[lang]) {
-          document.querySelectorAll(".ex-select-btn").forEach((btn, i) => {
-            if (lang === "he") {
-              btn.textContent = EXERCISES[btn.dataset.key].title;
-            } else if (exerciseNames[lang]) {
-              btn.textContent = exerciseNames[lang][i];
-            }
-          });
-        }
+        document.querySelectorAll(".ex-select-btn").forEach((btn, i) => {
+          btn.textContent = lang === "he" ? EXERCISES[btn.dataset.key].title : exerciseNames[lang][i];
+        });
 
         renderSheetMusic();
         renderFingerboard();
